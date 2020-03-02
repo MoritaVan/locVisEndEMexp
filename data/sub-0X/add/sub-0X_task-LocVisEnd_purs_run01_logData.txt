@@ -1,0 +1,96 @@
+sequence 1 started at 1582820901.088474
+sequence 1 event mri_trigger val = -8 at 1582820901.101082
+sequence 1 trial 1 onset at 1582820901.136826
+sequence 1 trial 1 offset at 1582820902.317267
+sequence 1 trial 2 onset at 1582820903.334107
+sequence 1 trial 2 offset at 1582820904.516955
+sequence 1 trial 3 onset at 1582820905.534530
+sequence 1 trial 3 offset at 1582820906.716872
+sequence 1 trial 4 onset at 1582820907.734084
+sequence 1 trial 4 offset at 1582820908.916774
+sequence 1 trial 5 onset at 1582820909.934413
+sequence 1 trial 5 offset at 1582820911.116759
+sequence 1 trial 6 onset at 1582820912.134398
+sequence 1 trial 6 offset at 1582820913.316689
+sequence 1 trial 7 onset at 1582820914.334285
+sequence 1 trial 7 offset at 1582820915.516590
+sequence 1 trial 8 onset at 1582820916.534224
+sequence 1 trial 8 offset at 1582820917.716543
+sequence 1 trial 9 onset at 1582820918.734161
+sequence 1 trial 9 offset at 1582820919.916493
+sequence 1 trial 10 onset at 1582820920.933542
+sequence 1 trial 10 offset at 1582820922.116405
+sequence 1 trial 11 onset at 1582820923.134089
+sequence 1 trial 11 offset at 1582820924.316347
+sequence 1 trial 12 onset at 1582820925.333575
+sequence 1 trial 12 offset at 1582820926.516302
+sequence 1 trial 13 onset at 1582820927.533917
+sequence 1 trial 13 offset at 1582820928.716220
+sequence 1 trial 14 onset at 1582820929.733866
+sequence 1 trial 14 offset at 1582820930.916215
+sequence 1 trial 15 onset at 1582820931.933799
+sequence 1 trial 15 offset at 1582820933.116129
+sequence 1 trial 16 onset at 1582820934.133795
+sequence 1 trial 16 offset at 1582820935.316074
+sequence 1 - 0 missed sync on 1152 frames, 0.0% (mean/median delay = NaN/NaN ms)
+sequence 1 stopped at 1582820936.352982
+sequence 2 started at 1582820936.353744
+sequence 2 trial 1 onset at 1582820936.366245
+sequence 2 trial 1 pursuit onset at 1582820936.366566
+sequence 2 trial 1 offset at 1582820937.549351
+sequence 2 trial 2 onset at 1582820938.566944
+sequence 2 trial 2 pursuit onset at 1582820938.567059
+sequence 2 trial 2 offset at 1582820939.749247
+sequence 2 trial 3 onset at 1582820940.766309
+sequence 2 trial 3 pursuit onset at 1582820940.766428
+sequence 2 trial 3 offset at 1582820941.949196
+sequence 2 trial 4 onset at 1582820942.966829
+sequence 2 trial 4 pursuit onset at 1582820942.966944
+sequence 2 trial 4 offset at 1582820944.149154
+sequence 2 trial 5 onset at 1582820945.166738
+sequence 2 trial 5 pursuit onset at 1582820945.166853
+sequence 2 trial 5 offset at 1582820946.349047
+sequence 2 trial 6 onset at 1582820947.366696
+sequence 2 trial 6 pursuit onset at 1582820947.366824
+sequence 2 trial 6 offset at 1582820948.549037
+sequence 2 trial 7 onset at 1582820949.566630
+sequence 2 trial 7 pursuit onset at 1582820949.566754
+sequence 2 trial 7 offset at 1582820950.748970
+sequence 2 trial 8 onset at 1582820951.766571
+sequence 2 trial 8 pursuit onset at 1582820951.766694
+sequence 2 trial 8 offset at 1582820952.948875
+sequence 2 trial 9 onset at 1582820953.966513
+sequence 2 trial 9 pursuit onset at 1582820953.966625
+sequence 2 trial 9 offset at 1582820955.148860
+sequence 2 trial 10 onset at 1582820956.166459
+sequence 2 trial 10 pursuit onset at 1582820956.166576
+sequence 2 trial 10 offset at 1582820957.348760
+sequence 2 trial 11 onset at 1582820958.366390
+sequence 2 trial 11 pursuit onset at 1582820958.366505
+sequence 2 trial 11 offset at 1582820959.548731
+sequence 2 trial 12 onset at 1582820960.566326
+sequence 2 trial 12 pursuit onset at 1582820960.566453
+sequence 2 trial 12 offset at 1582820961.748644
+sequence 2 trial 13 onset at 1582820962.766267
+sequence 2 trial 13 pursuit onset at 1582820962.766379
+sequence 2 trial 13 offset at 1582820963.948582
+sequence 2 trial 14 onset at 1582820964.966205
+sequence 2 trial 14 pursuit onset at 1582820964.966331
+sequence 2 trial 14 offset at 1582820966.148553
+sequence 2 trial 15 onset at 1582820967.166152
+sequence 2 trial 15 pursuit onset at 1582820967.166269
+sequence 2 trial 15 offset at 1582820968.348461
+sequence 2 trial 16 onset at 1582820969.366095
+sequence 2 trial 16 pursuit onset at 1582820969.366206
+sequence 2 trial 16 offset at 1582820970.548390
+sequence 2 trial 17 onset at 1582820971.566018
+sequence 2 trial 17 pursuit onset at 1582820971.566141
+sequence 2 trial 17 offset at 1582820972.748343
+sequence 2 trial 18 onset at 1582820973.765959
+sequence 2 trial 18 pursuit onset at 1582820973.766075
+sequence 2 trial 18 offset at 1582820974.948318
+sequence 2 trial 19 onset at 1582820975.965901
+sequence 2 trial 19 pursuit onset at 1582820975.966014
+sequence 2 trial 19 offset at 1582820977.148267
+sequence 2 trial 20 onset at 1582820978.165844
+sequence 2 trial 20 pursuit onset at 1582820978.165961
