@@ -141,7 +141,7 @@ for t = 1:const.seq_num
                 end
                 % spoke refs
                 for tDir = 1:size(const.purs_start,2)
-                    Screen('DrawLine',scr.main,const.gray,scr.x_mid,scr.y_mid,const.pursuit_matX(1,size(const.eyemov_ampVal,2),tDir),const.pursuit_matY(1,size(const.eyemov_ampVal,2),tDir));
+                    Screen('DrawLine',scr.main,const.gray,scr.x_mid,scr.y_mid,const.pursuit_matX(1,size(const.eyemov_ampVal,2),(tDir-1)*8+1),const.pursuit_matY(1,size(const.eyemov_ampVal,2),(tDir-1)*8+1));
                 end
 %                 Screen('DrawLine',scr.main,const.gray,scr.x_mid*.45,scr.y_mid,scr.x_mid*1.55,scr.y_mid);
                 text = sprintf('trial %d: %s, direction: %s',t,expDes.txt_var1{var1(seq_trial)},expDes.txt_var3{var3(seq_trial)});
@@ -307,8 +307,6 @@ for t = 1:const.seq_num
                 end
             end
         end
-        
-        WaitSecs(1)
         
     end
 
