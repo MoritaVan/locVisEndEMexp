@@ -111,6 +111,12 @@ expDes.nb_list          =   0;
 rng('default');rng('shuffle');
 runT                    =   const.runNum;
 
+purs_seq = 3*ones(1,const.purs_step);
+for idx = 1:9:const.purs_step
+    purs_seq(idx:2:idx+7) = 1;
+    purs_seq(idx+1:2:idx+7) = 2;
+end
+
 t_trial = 0;
 for t_seq = 1:size(const.eyemov_seq,2)
     
@@ -120,7 +126,11 @@ for t_seq = 1:size(const.eyemov_seq,2)
     if rand_var2 == 5
         seq_steps = const.fix_step;
     else
-        seq_steps = const.eyemov_step;
+        if const.cond2 == 1
+            seq_steps = const.sacc_step;
+        else
+            seq_steps = const.purs_step;
+        end
     end
     
     for seq_step = 1:seq_steps
@@ -145,11 +155,12 @@ for t_seq = 1:size(const.eyemov_seq,2)
                 end
             else
                 rand_var3 = expDes.threeV(idx,1);
-                if mod(seq_step,2) == 0
-                    rand_var4 = expDes.fourV(2);
-                else
-                    rand_var4 = expDes.fourV(1);
-                end
+                rand_var4 = purs_seq(seq_step);
+%                 if mod(seq_step,2) == 0
+%                     rand_var4 = expDes.fourV(2);
+%                 else
+%                     rand_var4 = expDes.fourV(1);
+%                 end
             end
         end
     

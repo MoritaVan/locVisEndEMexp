@@ -45,7 +45,9 @@ const.TR_num            =   (round(const.TR_dur/scr.frame_duration));           
 const.eyemov_seq        =   [1,2,1,2,1,2,1,2,1];                                                % 1 = blank/fixation, 2 = eye movement (pursuit or saccade, depending on the run)
 const.seq_num           =   numel(const.eyemov_seq);                                            % number of sequences per run
 
-const.eyemov_step       =   32;                                                                 % eye movement steps (possible directions)
+const.eyemov_step       =   32;                                                                 % eye movement steps 
+const.sacc_step         =   const.eyemov_step;                                                  % eye movement steps 
+const.purs_step         =   const.eyemov_step + const.eyemov_step/8-1;                          % eye movement steps (every 8 steps followed by a blank step) 
 const.fix_step          =   16;                                                                 % fixation period step
 const.eyemov_step_dur   =   const.TR_dur;                                                       % eye movement steps in seconds
 const.eyemov_step_num   =   (round(const.eyemov_step_dur/scr.frame_duration));                  % eye movement step duration in screen frames
@@ -81,27 +83,29 @@ const.saccade_tot_num   =   (round(const.saccade_tot_dur/scr.frame_duration));  
 
 % define TR for scanner
 if const.scanner
-    const.TRs = 0;
-    for seq = const.eyemov_seq
-        if seq == 1
-            TR_seq = const.fix_step;
-        else
-            TR_seq = const.eyemov_step;
-        end
-        const.TRs = const.TRs + TR_seq;
-    end
-    const.TRs = const.TRs;
-    fprintf(1,'\n\tScanner parameters; %1.0f TRs, %1.2f seconds, %s\n',const.TRs,const.TR_dur,datestr(seconds((const.TRs*const.TR_dur)),'MM:SS'));
+    const.TRs_sacc = sum(const.eyemov_seq==1)*const.fix_step + sum(const.eyemov_seq==2)*const.sacc_step;
+    const.TRs_purs = sum(const.eyemov_seq==1)*const.fix_step + sum(const.eyemov_seq==2)*const.purs_step;
+    
+    fprintf(1,'\n\tScanner parameters; saccade task: %1.0f TRs, %1.2f seconds, %s\n',const.TRs_sacc,const.TR_dur,datestr(seconds((const.TRs_sacc*const.TR_dur)),'MM:SS'));
+    fprintf(1,'\tScanner parameters; pursuit task: %1.0f TRs, %1.2f seconds, %s\n',const.TRs_purs,const.TR_dur,datestr(seconds((const.TRs_purs*const.TR_dur)),'MM:SS'));
 end
 
 % compute fixation coordinates
-const.fixation_matX(1:const.fix_fixation_num)                    = scr.x_mid;
-const.fixation_matY(1:const.fix_fixation_num)                    = scr.y_mid;
-const.fixation_matX(const.fix_fixation_num+1:const.fix_step_num) = -scr.x_mid;
-const.fixation_matY(const.fix_fixation_num+1:const.fix_step_num) = -scr.y_mid;
+if const.fix_fixation_num > 0
+    const.fixation_matX(1:const.fix_fixation_num)                    = scr.x_mid;
+    const.fixation_matY(1:const.fix_fixation_num)                    = scr.y_mid;
+    const.fixation_matX(const.fix_fixation_num+1:const.fix_step_num) = -scr.x_mid;
+    const.fixation_matY(const.fix_fixation_num+1:const.fix_step_num) = -scr.y_mid;
+else
+    const.fixation_matX(1:const.fix_step_num)                        = -scr.x_mid;
+    const.fixation_matY(1:const.fix_step_num)                        = -scr.y_mid;
+end
 
 % compute pursuit coordinates
 % 2 TR = 1 circunference pursuit mov
+const.pursuit_matX = nan(const.TR_num,size(const.eyemov_amp,2),const.purs_step);
+const.pursuit_matY = nan(const.TR_num,size(const.eyemov_amp,2),const.purs_step);
+
 for purs_diameter = 1:size(const.eyemov_amp,2)
     % compute a 2-TR mov
     for purs_start = 1:size(const.purs_start,2)  
@@ -148,6 +152,28 @@ for purs_diameter = 1:size(const.eyemov_amp,2)
         const.pursuit_matY(:, purs_diameter, half2) = repmat(pursuit_matY(const.eyemov_step_num+1:end,purs_diameter,start),1,nRep);
     end
 
+    % add a "blank" step between different start positions
+    blk_step = nRep*2;
+    purs_step = const.purs_step;
+    for idx = const.eyemov_step:-blk_step:blk_step+1
+        old_idx = idx:-1:(idx-blk_step+1);
+        new_idx = purs_step:-1:(purs_step-blk_step+1);
+        old_idx = flip(old_idx);
+        new_idx = flip(new_idx);
+        
+        const.pursuit_matX(:, purs_diameter, new_idx) = const.pursuit_matX(:,purs_diameter,old_idx);
+        const.pursuit_matX(:, purs_diameter, new_idx) = const.pursuit_matX(:,purs_diameter,old_idx);
+        const.pursuit_matY(:, purs_diameter, new_idx) = const.pursuit_matY(:,purs_diameter,old_idx);
+        const.pursuit_matY(:, purs_diameter, new_idx) = const.pursuit_matY(:,purs_diameter,old_idx);
+        
+        blk_idx = purs_step-blk_step;
+        const.pursuit_matX(:, purs_diameter, blk_idx) = repmat(-scr.x_mid,size(const.pursuit_matX,1),1);
+        const.pursuit_matX(:, purs_diameter, blk_idx) = repmat(-scr.x_mid,size(const.pursuit_matX,1),1);
+        const.pursuit_matY(:, purs_diameter, blk_idx) = repmat(-scr.y_mid,size(const.pursuit_matX,1),1);
+        const.pursuit_matY(:, purs_diameter, blk_idx) = repmat(-scr.y_mid,size(const.pursuit_matX,1),1);
+        
+        purs_step = blk_idx-1;
+    end
     
 %     % split into 1-TR sequences
 %     half1 = 1:2:7;
