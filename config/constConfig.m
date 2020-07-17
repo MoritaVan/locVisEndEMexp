@@ -52,7 +52,7 @@ const.eyemov_step_num   =   (round(const.eyemov_step_dur/scr.frame_duration));  
 
 const.fix_step_dur      =   const.TR_dur;                                                       % fixation step duration in seconds
 const.fix_step_num      =   (round(const.fix_step_dur/scr.frame_duration));                     % fixation step duration in screen frames
-const.fix_fixation_dur  =   0.050;                                                              % visually guided fixation duration in seconds
+const.fix_fixation_dur  =   const.TR_dur;                                                       % visually guided fixation duration in seconds
 const.fix_fixation_num  =   (round(const.fix_fixation_dur/scr.frame_duration));                 % visually guided duration in screen frames
 
 
