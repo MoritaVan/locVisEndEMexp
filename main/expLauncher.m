@@ -18,8 +18,8 @@ Screen('CloseAll');clear all;clear mex;clear functions;close all;home;AssertOpen
 
 % General settings
 % ----------------
-const.expName           =   'locVisEndEMexp';     % experiment name.
-const.expStart          =   0;              % Start of a recording exp                          0 = NO  , 1 = YES
+const.expName           =   'VElocEMexp';   % experiment name.
+const.expStart          =   1;              % Start of a recording exp                          0 = NO  , 1 = YES
 const.checkTrial        =   1;              % Print trial conditions (for debugging)            0 = NO  , 1 = YES
 const.writeLogTxt       =   1;              % write a log file in addition to eyelink file      0 = NO  , 1 = YES
 const.mkVideo           =   0;              % Make a video of a run (on mac not linux)          0 = NO  , 1 = YES
@@ -33,10 +33,10 @@ const.room              =   2;              % run in MRI or eye-tracking room   
 
 % Run order
 % ---------
-const.cond_run_order = [1;...               % run 01 - Sacc_run01      
-                        2;...               % run 02 - Purs_run01      
-                        1;...               % run 03 - Sacc_run02      
-                        2];                 % run 04 - Purs_run02     
+const.cond_run_order = [1;...               % run 01 - Sac      
+                        2;...               % run 02 - Pur      
+                        1;...               % run 03 - Sac      
+                        2];                 % run 04 - Pur     
 % Run number per condition
 % ------------------------
 const.cond_run_num   = [01;01;...
@@ -45,7 +45,7 @@ const.cond_run_num   = [01;01;...
 % Desired screen setting
 % ----------------------
 const.desiredFD         =   120;            % Desired refresh rate
-%fprintf(1,'\n\n\tDon''t forget to change before testing\n');
+% fprintf(1,'\n\n\tDon''t forget to change before testing\n');
 const.desiredRes        =   [1920,1080];    % Desired resolution
 
 % Path

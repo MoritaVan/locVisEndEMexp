@@ -150,7 +150,7 @@ for t = 1:const.seq_num
             
             % Draw target
             % fixation sequence
-            if var2(seq_trial) == 5
+            if var2(seq_trial) == 2
                 targetX = const.fixation_matX(nbf);
                 targetY = const.fixation_matY(nbf);
                 drawTarget(scr,const,targetX,targetY);
@@ -161,8 +161,8 @@ for t = 1:const.seq_num
                     % pursuit trial
                     if nbf >= 1 && nbf <= size(const.pursuit_matX,1) %const.pursuit_tot_num
                         % get coordinates
-                        targetX = const.pursuit_matX(nbf,var2(seq_trial),seq_trial);
-                        targetY = const.pursuit_matY(nbf,var2(seq_trial),seq_trial);
+                        targetX = const.pursuit_matX(nbf,1,seq_trial);
+                        targetY = const.pursuit_matY(nbf,1,seq_trial);
                     end
                     
                     drawTarget(scr,const,targetX,targetY);
@@ -170,8 +170,8 @@ for t = 1:const.seq_num
                     % saccade trial
                     if nbf >= 1 && nbf <= size(const.saccade_matX,1)
                         % get coordinates
-                        targetX = const.saccade_matX(nbf,var2(seq_trial),seq_trial);
-                        targetY = const.saccade_matY(nbf,var2(seq_trial),seq_trial);
+                        targetX = const.saccade_matX(nbf,1,seq_trial);
+                        targetY = const.saccade_matY(nbf,1,seq_trial);
                     end
                     
                     drawTarget(scr,const,targetX,targetY);

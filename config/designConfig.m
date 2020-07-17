@@ -33,39 +33,36 @@ expDes.txt_var1         =   {'sacc','purs','fix'};
 % 02 = smooth pursuit
 % 03 = fixation
 
-% Var 2 : eye movement amplitude (5 modalities)
+% Var 2 : eye movement amplitude (2 modalities)
 % ======
-expDes.twoV             =   [1;2;3;4;5];
-expDes.txt_var2         =   {'2.5 dva','5 dva','7.5 dva','10 dva','none'};
-% 01 = 4 dva
-% 02 = 6 dva
-% 03 = 8 dva
-% 04 = 10 dva
-% 05 = none
+expDes.twoV             =   [1;2];
+expDes.txt_var2         =   {'19.2 dva','none'};
+% 01 = 19.2 dva
+% 02 = none
 
 % Var 3 : eye movement start position (9 modalities)
 % ======
 expDes.threeV           =   [01, 02;
-                             09, 10;
-                             03, 02;
-                             11, 10;
-                             05, 02;
-                             13, 10;
-                             07, 02;
-                             15, 10;
+                             01, 10;
+                             01, 02;
+                             01, 10;
+                             01, 02;
+                             01, 10;
+                             01, 02;
+                             01, 10;
                              17, 17];
 expDes.txt_var3=   {  '0 deg',  '45 deg',  '90 deg', '135 deg', '180 deg', '225 deg', '270 deg', '315 deg',...
                     '180 deg', '225 deg', '270 deg', '315 deg',   '0 deg',  '45 deg',  '90 deg', '135 deg',...
                        'none'};
 % pursuit           saccade
 % 01 =   0.0 deg    01 =  45.0 deg
-% 02 = 180.0 deg    02 = 225.0 deg
-% 03 =  90.0 deg    03 = 135.0 deg
-% 04 = 270.0 deg    04 = 315.0 deg
-% 05 = 180.0 deg    05 = 225.0 deg
+% 02 =   0.0 deg    02 = 225.0 deg
+% 03 =   0.0 deg    03 = 135.0 deg
+% 04 =   0.0 deg    04 = 315.0 deg
+% 05 =   0.0 deg    05 = 225.0 deg
 % 06 =   0.0 deg    06 =  45.0 deg
-% 07 = 270.0 deg    07 = 315.0 deg
-% 08 =  90.0 deg    08 = 135.0 deg
+% 07 =   0.0 deg    07 = 315.0 deg
+% 08 =   0.0 deg    08 = 135.0 deg
 % 17 = none  
 
 % Var 4 : trial types 2 (3 modalities)
@@ -117,14 +114,14 @@ for t_seq = 1:size(const.eyemov_seq,2)
     cond1 = const.cond1;
     rand_var2 =   expDes.amp_sequence(t_seq);
     
-    if rand_var2 == 5
+    if rand_var2 == 2
         seq_steps = const.fix_step;
     else
         seq_steps = const.eyemov_step;
     end
     
     for seq_step = 1:seq_steps
-        if rand_var2 == 5
+        if rand_var2 == 2
             rand_var1 = expDes.oneV(end);
             rand_var3 = expDes.threeV(end,1);
             rand_var4 = expDes.fourV(end);
