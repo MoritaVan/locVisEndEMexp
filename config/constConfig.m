@@ -45,7 +45,7 @@ const.TR_num            =   (round(const.TR_dur/scr.frame_duration));           
 const.eyemov_seq        =   [1,2,1,2,1,2,1,2,1];                                                % 1 = blank/fixation, 2 = eye movement (pursuit or saccade, depending on the run)
 const.seq_num           =   numel(const.eyemov_seq);                                            % number of sequences per run
 
-const.eyemov_step       =   32;                                                                 % eye movement steps (possible directions)
+const.eyemov_step       =   32;                                                                 % eye movement steps (in TRs)
 const.fix_step          =   16;                                                                 % fixation period step
 const.eyemov_step_dur   =   const.TR_dur;                                                       % eye movement steps in seconds
 const.eyemov_step_num   =   (round(const.eyemov_step_dur/scr.frame_duration));                  % eye movement step duration in screen frames
@@ -70,7 +70,7 @@ const.sacc_positions    =   45:const.eyemov_start_step:360-1;                   
 
 const.pursuit_fix_dur   =   0.000;                                                              % first fixation duration in seconds
 const.pursuit_fix_num   =   (round(const.pursuit_fix_dur/scr.frame_duration));                  % first fixation duration in screen frames
-const.pursuit_dur       =   4*const.TR_dur - const.pursuit_fix_dur;                             % eye movement total duration in seconds (4.8s)
+const.pursuit_dur       =   6*const.TR_dur - const.pursuit_fix_dur;                             % eye movement total duration in seconds (4.8s)
 const.pursuit_num       =   (round(const.pursuit_dur/scr.frame_duration));                      % eye movement total duration in screen frames
 const.pursuit_end_dur   =   0.000;                                                              % return saccade duration in seconds
 const.pursuit_end_num   =   (round(const.pursuit_end_dur/scr.frame_duration));                  % return saccade duration in screen frames
@@ -103,9 +103,9 @@ const.fixation_matX(const.fix_fixation_num+1:const.fix_step_num) = -scr.x_mid;
 const.fixation_matY(const.fix_fixation_num+1:const.fix_step_num) = -scr.y_mid;
 
 % compute pursuit coordinates
-% 4 TR = 1 circunference pursuit mov
+% 6 TR = 1 circunference pursuit mov
 for purs_direc = 1:size(const.purs_direc,2)  
-    % compute a 4-TR mov
+    % compute a 6-TR mov
     for purs_diameter = 1:size(const.eyemov_amp,2)
         % fixation
         if const.pursuit_fix_num > 0
@@ -139,22 +139,31 @@ for purs_direc = 1:size(const.purs_direc,2)
     end
 end
 
-% repeat movement nRep times / split into 4-TR sequences
-nRep = (const.eyemov_step/4);
-q1 = (1:nRep)*4-3;
-q2 = (1:nRep)*4-2;
-q3 = (1:nRep)*4-1;
-q4 = (1:nRep)*4-0;
+% repeat movement nRep times / split into 6-TR sequences
+nRep = floor(const.eyemov_step/6);
+q1 = (1:nRep)*6-5;
+q2 = (1:nRep)*6-4;
+q3 = (1:nRep)*6-3;
+q4 = (1:nRep)*6-2;
+q5 = (1:nRep)*6-1;
+q6 = (1:nRep)*6-0;
 for purs_direc = 1:size(const.purs_direc,2)
     const.pursuit_matX(:, purs_direc, q1) = repmat(pursuit_matX(0*const.eyemov_step_num+1:1*const.eyemov_step_num,purs_direc),1,nRep);
     const.pursuit_matX(:, purs_direc, q2) = repmat(pursuit_matX(1*const.eyemov_step_num+1:2*const.eyemov_step_num,purs_direc),1,nRep);
     const.pursuit_matX(:, purs_direc, q3) = repmat(pursuit_matX(2*const.eyemov_step_num+1:3*const.eyemov_step_num,purs_direc),1,nRep);
     const.pursuit_matX(:, purs_direc, q4) = repmat(pursuit_matX(3*const.eyemov_step_num+1:4*const.eyemov_step_num,purs_direc),1,nRep);
+    const.pursuit_matX(:, purs_direc, q5) = repmat(pursuit_matX(4*const.eyemov_step_num+1:5*const.eyemov_step_num,purs_direc),1,nRep);
+    const.pursuit_matX(:, purs_direc, q6) = repmat(pursuit_matX(5*const.eyemov_step_num+1:6*const.eyemov_step_num,purs_direc),1,nRep);
 
     const.pursuit_matY(:, purs_direc, q1) = repmat(pursuit_matY(0*const.eyemov_step_num+1:1*const.eyemov_step_num,purs_direc),1,nRep);
     const.pursuit_matY(:, purs_direc, q2) = repmat(pursuit_matY(1*const.eyemov_step_num+1:2*const.eyemov_step_num,purs_direc),1,nRep);
     const.pursuit_matY(:, purs_direc, q3) = repmat(pursuit_matY(2*const.eyemov_step_num+1:3*const.eyemov_step_num,purs_direc),1,nRep);
     const.pursuit_matY(:, purs_direc, q4) = repmat(pursuit_matY(3*const.eyemov_step_num+1:4*const.eyemov_step_num,purs_direc),1,nRep);
+    const.pursuit_matY(:, purs_direc, q5) = repmat(pursuit_matY(4*const.eyemov_step_num+1:5*const.eyemov_step_num,purs_direc),1,nRep);
+    const.pursuit_matY(:, purs_direc, q6) = repmat(pursuit_matY(5*const.eyemov_step_num+1:6*const.eyemov_step_num,purs_direc),1,nRep);
+    
+    const.pursuit_matX(:, purs_direc, 31:32) = -scr.x_mid;
+    const.pursuit_matY(:, purs_direc, 31:32) = -scr.y_mid;
 end
 
 % compute saccade coordinates
