@@ -36,8 +36,8 @@ for t = 1:const.seq_num
     % ---------------------------------
 
     % trials number in this sequence    
-    seq_trials_mat = expDes.expMat(:,8) == t;
-    seq_trials     = expDes.expMat(seq_trials_mat,9);
+    seq_trials_mat = expDes.expMat(:,9) == t;
+    seq_trials     = expDes.expMat(seq_trials_mat,10);
 	trials_idx     = expDes.expMat(seq_trials_mat,2);
 
     % Cond1 : Task
@@ -46,16 +46,19 @@ for t = 1:const.seq_num
     % Var 1 : eye movement type
     var1  = expDes.expMat(seq_trials_mat,4);
     
-    % Var 2 : eye movement amplitude
+    % Var 2 : eye movement direction
     var2  = expDes.expMat(seq_trials_mat,5);
     
     % Var 3 : eye movement start position
     var3  = expDes.expMat(seq_trials_mat,6);
+    
+    % Var 4 : eye movement amplitude
+    var4 = expDes.expMat(seq_trials_mat,8);
 
     if const.checkTrial && const.expStart == 0
         fprintf(1,'\n\n\t========================  SEQ %3.0f ========================\n',t);
         fprintf(1,'\n\tTask                         =\t%s',expDes.txt_cond1{cond1(1)});
-        fprintf(1,'\n\tEye movement amplitude       =\t%s',expDes.txt_var2{var2(1)});
+        fprintf(1,'\n\tEye movement direction       =\t%s',expDes.txt_var2{var2(1)});
     end
 
     % wait first trigger in trial beginning
@@ -120,7 +123,7 @@ for t = 1:const.seq_num
         
         if const.checkTrial && const.expStart == 0
             fprintf(1,'\n\tEye movement type            =\t%s',expDes.txt_var1{var1(seq_trial)});
-            fprintf(1,'\n\tEye movement direction       =\t%s',expDes.txt_var3{var3(seq_trial)});
+            fprintf(1,'\n\tEye movement direction       =\t%s',expDes.txt_var2{var2(seq_trial)});
             
         end
         
@@ -150,7 +153,7 @@ for t = 1:const.seq_num
             
             % Draw target
             % fixation sequence
-            if var2(seq_trial) == 2
+            if var2(seq_trial) == 3
                 targetX = const.fixation_matX(nbf);
                 targetY = const.fixation_matY(nbf);
                 drawTarget(scr,const,targetX,targetY);
@@ -161,8 +164,8 @@ for t = 1:const.seq_num
                     % pursuit trial
                     if nbf >= 1 && nbf <= size(const.pursuit_matX,1) %const.pursuit_tot_num
                         % get coordinates
-                        targetX = const.pursuit_matX(nbf,1,seq_trial);
-                        targetY = const.pursuit_matY(nbf,1,seq_trial);
+                        targetX = const.pursuit_matX(nbf,var2(seq_trial),seq_trial);
+                        targetY = const.pursuit_matY(nbf,var2(seq_trial),seq_trial);
                     end
                     
                     drawTarget(scr,const,targetX,targetY);
