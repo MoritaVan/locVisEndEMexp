@@ -76,9 +76,9 @@ const.pursuit_end_dur   =   0.000;                                              
 const.pursuit_end_num   =   (round(const.pursuit_end_dur/scr.frame_duration));                  % return saccade duration in screen frames
 const.pursuit_ang_step  =   360/const.pursuit_num;                                              % eye movement angle step
 
-const.saccade_fix_dur   =   0.200;                                                              % first fixation duration in seconds
+const.saccade_fix_dur   =   0.600;                                                              % first fixation duration in seconds
 const.saccade_fix_num   =   (round(const.saccade_fix_dur/scr.frame_duration));                  % first fixation duration in screen frames
-const.saccade_tot_dur   =   0.400;                                                              % eye movement total duration in seconds
+const.saccade_tot_dur   =   0.600;                                                              % eye movement total duration in seconds
 const.saccade_tot_num   =   (round(const.saccade_tot_dur/scr.frame_duration));                  % eye movement total duration in screen frames
 
 % define TR for scanner
@@ -167,18 +167,19 @@ for purs_direc = 1:size(const.purs_direc,2)
 end
 
 % compute saccade coordinates
-% 2 TR = 4 saccades
+% 4 TR = 4 saccades
 step1 = 1:const.saccade_fix_num;                                    % fixation 1
 step2 = (step1(end) + 1):(step1(end) + const.saccade_tot_num);      % saccade 1
-step3 = step2(end) + step1;                                         % fixation 2
-step4 = step2(end) + step2;                                         % saccade 2
+% step3 = step2(end) + step1;                                         % fixation 2
+% step4 = step2(end) + step2;                                         % saccade 2
 
 for sacc_amp = 1:size(const.eyemov_amp,2)
     for sacc_start = 1:size(const.sacc_start,2)
-        idx1 = (sacc_start-1)*4 + 1; % TR 1 - vis
-        idx2 = (sacc_start-1)*4 + 2; % TR 2 - vis
-        idx3 = (sacc_start-1)*4 + 3; % TR 3 - end
-        idx4 = (sacc_start-1)*4 + 4; % TR 4 - end
+        idx1 = (sacc_start-1)*8 + 1; % TR 1 - vis
+        idx2 = (sacc_start-1)*8 + 2; % TR 2 - vis
+        idx3 = (sacc_start-1)*8 + 3; % TR 3 - vis
+        idx4 = (sacc_start-1)*8 + 4; % TR 4 - vis
+        idx5 = idx4+1:idx4+4;        % TR 5-8 - end
         
         sacc1 = const.sacc_positions(sacc_start);
         if sacc_start+1 <= 4, sacc2 = const.sacc_positions(sacc_start+1); else sacc2 = const.sacc_positions(mod(sacc_start+1,4)); end
@@ -192,34 +193,33 @@ for sacc_amp = 1:size(const.eyemov_amp,2)
         const.saccade_matX(step2,sacc_amp,idx1) = scr.x_mid + (cosd(sacc2) * const.eyemov_amp(sacc_amp)/2);
         const.saccade_matY(step2,sacc_amp,idx1) = scr.y_mid + (-sind(sacc2) * const.eyemov_amp(sacc_amp)/2);
 
-        const.saccade_matX(step3,sacc_amp,idx1) = scr.x_mid + (cosd(sacc2) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step3,sacc_amp,idx1) = scr.y_mid + (-sind(sacc2) * const.eyemov_amp(sacc_amp)/2);
-
-        const.saccade_matX(step4,sacc_amp,idx1) = scr.x_mid + (cosd(sacc3) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step4,sacc_amp,idx1) = scr.y_mid + (-sind(sacc3) * const.eyemov_amp(sacc_amp)/2); 
-        
         % TR 2
-        const.saccade_matX(step1,sacc_amp,idx2) = scr.x_mid + (cosd(sacc3) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step1,sacc_amp,idx2) = scr.y_mid + (-sind(sacc3) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matX(step1,sacc_amp,idx2) = scr.x_mid + (cosd(sacc2) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matY(step1,sacc_amp,idx2) = scr.y_mid + (-sind(sacc2) * const.eyemov_amp(sacc_amp)/2);
 
-        const.saccade_matX(step2,sacc_amp,idx2) = scr.x_mid + (cosd(sacc4) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step2,sacc_amp,idx2) = scr.y_mid + (-sind(sacc4) * const.eyemov_amp(sacc_amp)/2);
-
-        const.saccade_matX(step3,sacc_amp,idx2) = scr.x_mid + (cosd(sacc4) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step3,sacc_amp,idx2) = scr.y_mid + (-sind(sacc4) * const.eyemov_amp(sacc_amp)/2);
-
-        const.saccade_matX(step4,sacc_amp,idx2) = scr.x_mid + (cosd(sacc1) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step4,sacc_amp,idx2) = scr.y_mid + (-sind(sacc1) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matX(step2,sacc_amp,idx2) = scr.x_mid + (cosd(sacc3) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matY(step2,sacc_amp,idx2) = scr.y_mid + (-sind(sacc3) * const.eyemov_amp(sacc_amp)/2); 
         
         % TR 3
-        const.saccade_matX(:,sacc_amp,idx3) = -scr.x_mid;
-        const.saccade_matY(:,sacc_amp,idx3) = -scr.y_mid;
+        const.saccade_matX(step1,sacc_amp,idx3) = scr.x_mid + (cosd(sacc3) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matY(step1,sacc_amp,idx3) = scr.y_mid + (-sind(sacc3) * const.eyemov_amp(sacc_amp)/2);
+
+        const.saccade_matX(step2,sacc_amp,idx3) = scr.x_mid + (cosd(sacc4) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matY(step2,sacc_amp,idx3) = scr.y_mid + (-sind(sacc4) * const.eyemov_amp(sacc_amp)/2);
+
         % TR 4
-        const.saccade_matX(:,sacc_amp,idx4) = -scr.x_mid;
-        const.saccade_matY(:,sacc_amp,idx4) = -scr.y_mid;
+        const.saccade_matX(step1,sacc_amp,idx4) = scr.x_mid + (cosd(sacc4) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matY(step1,sacc_amp,idx4) = scr.y_mid + (-sind(sacc4) * const.eyemov_amp(sacc_amp)/2);
+
+        const.saccade_matX(step2,sacc_amp,idx4) = scr.x_mid + (cosd(sacc1) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matY(step2,sacc_amp,idx4) = scr.y_mid + (-sind(sacc1) * const.eyemov_amp(sacc_amp)/2);
+        
+        % TR 5-8
+        const.saccade_matX(:,sacc_amp,idx5) = -scr.x_mid;
+        const.saccade_matY(:,sacc_amp,idx5) = -scr.y_mid;
     end
     
-    step = 4 * size(const.sacc_start,2); % 4 TRs
+    step = 8 * size(const.sacc_start,2); % 8 TRs
     for idx = step+1:step:32
         const.saccade_matX(:,sacc_amp,idx:idx+step-1) = const.saccade_matX(:,sacc_amp,1:step);
         const.saccade_matY(:,sacc_amp,idx:idx+step-1) = const.saccade_matY(:,sacc_amp,1:step);
