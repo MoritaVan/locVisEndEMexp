@@ -186,7 +186,7 @@ for eyemov_direc = 1:size(const.eyemov_direc,2)
         sacc(3) = mod(360 + const.eyemov_direc(eyemov_direc)*const.sacc_positions(sacc_start+2),360);
         sacc(4) = mod(360 + const.eyemov_direc(eyemov_direc)*const.sacc_positions(sacc_start+3),360);
         if const.eyemov_direc(eyemov_direc) == -1
-            sacc = circshift(sacc,1,2)
+            sacc = circshift(sacc,1,2);
         end
         
         % TR 1
