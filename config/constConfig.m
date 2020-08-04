@@ -60,7 +60,7 @@ const.eyemov_ampVal     =   [19.2];                                             
 const.eyemov_amp        =   vaDeg2pix(const.eyemov_ampVal,scr);                                 % eye movement amplitude in pixel
 
 const.eyemov_start_step =   90;                                                                 % start position steps in degrees
-const.purs_direc        =   [1 -1];                                                             % pursuit direction (cw/ccw)
+const.eyemov_direc      =   [1 -1];                                                             % eye movement direction (cw/ccw)
 const.purs_steps        =   45;                                                                 % size of each occlusion+pursuit in degrees (4 steps/half circle)
 const.occl_start        =   180:const.purs_steps:360-1;                                         % pursuit start position in degrees (for the second half)
 const.purs_start        =   const.occl_start + randi([300,375],1,4)/10;                         % pursuit start position in degrees (for the second half)
@@ -76,9 +76,9 @@ const.pursuit_end_dur   =   0.000;                                              
 const.pursuit_end_num   =   (round(const.pursuit_end_dur/scr.frame_duration));                  % return saccade duration in screen frames
 const.pursuit_ang_step  =   360/const.pursuit_num;                                              % eye movement angle step
 
-const.saccade_fix_dur   =   0.200;                                                              % first fixation duration in seconds
+const.saccade_fix_dur   =   0.400;                                                              % first fixation duration in seconds
 const.saccade_fix_num   =   (round(const.saccade_fix_dur/scr.frame_duration));                  % first fixation duration in screen frames
-const.saccade_tot_dur   =   0.400;                                                              % eye movement total duration in seconds
+const.saccade_tot_dur   =   0.800;                                                              % eye movement total duration in seconds
 const.saccade_tot_num   =   (round(const.saccade_tot_dur/scr.frame_duration));                  % eye movement total duration in screen frames
 
 % define TR for scanner
@@ -104,14 +104,14 @@ const.fixation_matY(const.fix_fixation_num+1:const.fix_step_num) = -scr.y_mid;
 
 % compute pursuit coordinates
 % 6 TR = 1 circunference pursuit mov
-for purs_direc = 1:size(const.purs_direc,2)  
+for eyemov_direc = 1:size(const.eyemov_direc,2)  
     % compute a 6-TR mov
     for purs_diameter = 1:size(const.eyemov_amp,2)
         % fixation
         if const.pursuit_fix_num > 0
             step1 = 1:const.pursuit_fix_num;
-            pursuit_matX(step1,purs_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(0);
-            pursuit_matY(step1,purs_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(0));
+            pursuit_matX(step1,eyemov_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(0);
+            pursuit_matY(step1,eyemov_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(0));
         else 
             step1 = 0;
         end
@@ -122,19 +122,19 @@ for purs_direc = 1:size(const.purs_direc,2)
             angle = (nbf-1)*const.pursuit_ang_step;
 
             if (angle >= const.occl_start(1) && angle < const.purs_start(1)) || (angle >= const.occl_start(2) && angle < const.purs_start(2)) || (angle >= const.occl_start(3) && angle < const.purs_start(3)) || (angle >= const.occl_start(4) && angle < const.purs_start(4))% occluded arc
-                pursuit_matX(nbf,purs_direc) = -scr.x_mid;
-                pursuit_matY(nbf,purs_direc) = -scr.y_mid;
+                pursuit_matX(nbf,eyemov_direc) = -scr.x_mid;
+                pursuit_matY(nbf,eyemov_direc) = -scr.y_mid;
             else
-                pursuit_matX(nbf,purs_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(360 + const.purs_direc(purs_direc)*angle);
-                pursuit_matY(nbf,purs_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(360 + const.purs_direc(purs_direc)*angle));
+                pursuit_matX(nbf,eyemov_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(360 + const.eyemov_direc(eyemov_direc)*angle);
+                pursuit_matY(nbf,eyemov_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(360 + const.eyemov_direc(eyemov_direc)*angle));
             end
         end
 
         % fixation
         if const.pursuit_end_num > 0
             step3 = (step2(end) + 1):(step2(end) + const.pursuit_end_num);
-            pursuit_matX(step3,purs_direc) = pursuit_matX(nbf-1,purs_direc);
-            pursuit_matY(step3,purs_direc) = pursuit_matY(nbf-1,purs_direc);
+            pursuit_matX(step3,eyemov_direc) = pursuit_matX(nbf-1,eyemov_direc);
+            pursuit_matY(step3,eyemov_direc) = pursuit_matY(nbf-1,eyemov_direc);
         end
     end
 end
@@ -147,82 +147,85 @@ q3 = (1:nRep)*6-3;
 q4 = (1:nRep)*6-2;
 q5 = (1:nRep)*6-1;
 q6 = (1:nRep)*6-0;
-for purs_direc = 1:size(const.purs_direc,2)
-    const.pursuit_matX(:, purs_direc, q1) = repmat(pursuit_matX(0*const.eyemov_step_num+1:1*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matX(:, purs_direc, q2) = repmat(pursuit_matX(1*const.eyemov_step_num+1:2*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matX(:, purs_direc, q3) = repmat(pursuit_matX(2*const.eyemov_step_num+1:3*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matX(:, purs_direc, q4) = repmat(pursuit_matX(3*const.eyemov_step_num+1:4*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matX(:, purs_direc, q5) = repmat(pursuit_matX(4*const.eyemov_step_num+1:5*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matX(:, purs_direc, q6) = repmat(pursuit_matX(5*const.eyemov_step_num+1:6*const.eyemov_step_num,purs_direc),1,nRep);
+for eyemov_direc = 1:size(const.eyemov_direc,2)
+    const.pursuit_matX(:, eyemov_direc, q1) = repmat(pursuit_matX(0*const.eyemov_step_num+1:1*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matX(:, eyemov_direc, q2) = repmat(pursuit_matX(1*const.eyemov_step_num+1:2*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matX(:, eyemov_direc, q3) = repmat(pursuit_matX(2*const.eyemov_step_num+1:3*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matX(:, eyemov_direc, q4) = repmat(pursuit_matX(3*const.eyemov_step_num+1:4*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matX(:, eyemov_direc, q5) = repmat(pursuit_matX(4*const.eyemov_step_num+1:5*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matX(:, eyemov_direc, q6) = repmat(pursuit_matX(5*const.eyemov_step_num+1:6*const.eyemov_step_num,eyemov_direc),1,nRep);
 
-    const.pursuit_matY(:, purs_direc, q1) = repmat(pursuit_matY(0*const.eyemov_step_num+1:1*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matY(:, purs_direc, q2) = repmat(pursuit_matY(1*const.eyemov_step_num+1:2*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matY(:, purs_direc, q3) = repmat(pursuit_matY(2*const.eyemov_step_num+1:3*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matY(:, purs_direc, q4) = repmat(pursuit_matY(3*const.eyemov_step_num+1:4*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matY(:, purs_direc, q5) = repmat(pursuit_matY(4*const.eyemov_step_num+1:5*const.eyemov_step_num,purs_direc),1,nRep);
-    const.pursuit_matY(:, purs_direc, q6) = repmat(pursuit_matY(5*const.eyemov_step_num+1:6*const.eyemov_step_num,purs_direc),1,nRep);
+    const.pursuit_matY(:, eyemov_direc, q1) = repmat(pursuit_matY(0*const.eyemov_step_num+1:1*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matY(:, eyemov_direc, q2) = repmat(pursuit_matY(1*const.eyemov_step_num+1:2*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matY(:, eyemov_direc, q3) = repmat(pursuit_matY(2*const.eyemov_step_num+1:3*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matY(:, eyemov_direc, q4) = repmat(pursuit_matY(3*const.eyemov_step_num+1:4*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matY(:, eyemov_direc, q5) = repmat(pursuit_matY(4*const.eyemov_step_num+1:5*const.eyemov_step_num,eyemov_direc),1,nRep);
+    const.pursuit_matY(:, eyemov_direc, q6) = repmat(pursuit_matY(5*const.eyemov_step_num+1:6*const.eyemov_step_num,eyemov_direc),1,nRep);
     
-    const.pursuit_matX(:, purs_direc, 31:32) = -scr.x_mid;
-    const.pursuit_matY(:, purs_direc, 31:32) = -scr.y_mid;
+    const.pursuit_matX(:, eyemov_direc, 31:32) = scr.x_mid;
+    const.pursuit_matY(:, eyemov_direc, 31:32) = scr.y_mid;
 end
 
 % compute saccade coordinates
-% 2 TR = 4 saccades
+% 4 TR = 4 saccades
 step1 = 1:const.saccade_fix_num;                                    % fixation 1
 step2 = (step1(end) + 1):(step1(end) + const.saccade_tot_num);      % saccade 1
-step3 = step2(end) + step1;                                         % fixation 2
-step4 = step2(end) + step2;                                         % saccade 2
+% step3 = step2(end) + step1;                                         % fixation 2
+% step4 = step2(end) + step2;                                         % saccade 2
 
-for sacc_amp = 1:size(const.eyemov_amp,2)
+for eyemov_direc = 1:size(const.eyemov_direc,2)
     for sacc_start = 1:size(const.sacc_start,2)
-        idx1 = (sacc_start-1)*4 + 1; % TR 1 - vis
-        idx2 = (sacc_start-1)*4 + 2; % TR 2 - vis
-        idx3 = (sacc_start-1)*4 + 3; % TR 3 - end
-        idx4 = (sacc_start-1)*4 + 4; % TR 4 - end
+        idx1 = (sacc_start-1)*8 + 1; % TR 1 - vis
+        idx2 = (sacc_start-1)*8 + 2; % TR 2 - vis
+        idx3 = (sacc_start-1)*8 + 3; % TR 3 - vis
+        idx4 = (sacc_start-1)*8 + 4; % TR 4 - vis
+        idx5 = idx4+1:idx4+4;        % TR 5-8 - end
         
-        sacc1 = const.sacc_positions(sacc_start);
-        if sacc_start+1 <= 4, sacc2 = const.sacc_positions(sacc_start+1); else sacc2 = const.sacc_positions(mod(sacc_start+1,4)); end
-        if sacc_start+2 <= 4, sacc3 = const.sacc_positions(sacc_start+2); else sacc3 = const.sacc_positions(mod(sacc_start+2,4)); end
-        if sacc_start+3 <= 4, sacc4 = const.sacc_positions(sacc_start+3); else sacc4 = const.sacc_positions(mod(sacc_start+3,4)); end
+        sacc(1) = mod(360 + const.eyemov_direc(eyemov_direc)*const.sacc_positions(sacc_start),360);
+        sacc(2) = mod(360 + const.eyemov_direc(eyemov_direc)*const.sacc_positions(sacc_start+1),360);
+        sacc(3) = mod(360 + const.eyemov_direc(eyemov_direc)*const.sacc_positions(sacc_start+2),360);
+        sacc(4) = mod(360 + const.eyemov_direc(eyemov_direc)*const.sacc_positions(sacc_start+3),360);
+        if const.eyemov_direc(eyemov_direc) == -1
+            sacc = circshift(sacc,1,2);
+        end
         
         % TR 1
-        const.saccade_matX(step1,sacc_amp,idx1) = scr.x_mid + (cosd(sacc1) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step1,sacc_amp,idx1) = scr.y_mid + (-sind(sacc1) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matX(step1,eyemov_direc,idx1) = scr.x_mid + (cosd(sacc(1)) * const.eyemov_amp/2);
+        const.saccade_matY(step1,eyemov_direc,idx1) = scr.y_mid + (-sind(sacc(1)) * const.eyemov_amp/2);
 
-        const.saccade_matX(step2,sacc_amp,idx1) = scr.x_mid + (cosd(sacc2) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step2,sacc_amp,idx1) = scr.y_mid + (-sind(sacc2) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matX(step2,eyemov_direc,idx1) = scr.x_mid + (cosd(sacc(2)) * const.eyemov_amp/2);
+        const.saccade_matY(step2,eyemov_direc,idx1) = scr.y_mid + (-sind(sacc(2)) * const.eyemov_amp/2);
 
-        const.saccade_matX(step3,sacc_amp,idx1) = scr.x_mid + (cosd(sacc2) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step3,sacc_amp,idx1) = scr.y_mid + (-sind(sacc2) * const.eyemov_amp(sacc_amp)/2);
-
-        const.saccade_matX(step4,sacc_amp,idx1) = scr.x_mid + (cosd(sacc3) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step4,sacc_amp,idx1) = scr.y_mid + (-sind(sacc3) * const.eyemov_amp(sacc_amp)/2); 
-        
         % TR 2
-        const.saccade_matX(step1,sacc_amp,idx2) = scr.x_mid + (cosd(sacc3) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step1,sacc_amp,idx2) = scr.y_mid + (-sind(sacc3) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matX(step1,eyemov_direc,idx2) = scr.x_mid + (cosd(sacc(2)) * const.eyemov_amp/2);
+        const.saccade_matY(step1,eyemov_direc,idx2) = scr.y_mid + (-sind(sacc(2)) * const.eyemov_amp/2);
 
-        const.saccade_matX(step2,sacc_amp,idx2) = scr.x_mid + (cosd(sacc4) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step2,sacc_amp,idx2) = scr.y_mid + (-sind(sacc4) * const.eyemov_amp(sacc_amp)/2);
-
-        const.saccade_matX(step3,sacc_amp,idx2) = scr.x_mid + (cosd(sacc4) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step3,sacc_amp,idx2) = scr.y_mid + (-sind(sacc4) * const.eyemov_amp(sacc_amp)/2);
-
-        const.saccade_matX(step4,sacc_amp,idx2) = scr.x_mid + (cosd(sacc1) * const.eyemov_amp(sacc_amp)/2);
-        const.saccade_matY(step4,sacc_amp,idx2) = scr.y_mid + (-sind(sacc1) * const.eyemov_amp(sacc_amp)/2);
+        const.saccade_matX(step2,eyemov_direc,idx2) = scr.x_mid + (cosd(sacc(3)) * const.eyemov_amp/2);
+        const.saccade_matY(step2,eyemov_direc,idx2) = scr.y_mid + (-sind(sacc(3)) * const.eyemov_amp/2); 
         
         % TR 3
-        const.saccade_matX(:,sacc_amp,idx3) = -scr.x_mid;
-        const.saccade_matY(:,sacc_amp,idx3) = -scr.y_mid;
+        const.saccade_matX(step1,eyemov_direc,idx3) = scr.x_mid + (cosd(sacc(3)) * const.eyemov_amp/2);
+        const.saccade_matY(step1,eyemov_direc,idx3) = scr.y_mid + (-sind(sacc(3)) * const.eyemov_amp/2);
+
+        const.saccade_matX(step2,eyemov_direc,idx3) = scr.x_mid + (cosd(sacc(4)) * const.eyemov_amp/2);
+        const.saccade_matY(step2,eyemov_direc,idx3) = scr.y_mid + (-sind(sacc(4)) * const.eyemov_amp/2);
+
         % TR 4
-        const.saccade_matX(:,sacc_amp,idx4) = -scr.x_mid;
-        const.saccade_matY(:,sacc_amp,idx4) = -scr.y_mid;
+        const.saccade_matX(step1,eyemov_direc,idx4) = scr.x_mid + (cosd(sacc(4)) * const.eyemov_amp/2);
+        const.saccade_matY(step1,eyemov_direc,idx4) = scr.y_mid + (-sind(sacc(4)) * const.eyemov_amp/2);
+
+        const.saccade_matX(step2,eyemov_direc,idx4) = scr.x_mid + (cosd(sacc(1)) * const.eyemov_amp/2);
+        const.saccade_matY(step2,eyemov_direc,idx4) = scr.y_mid + (-sind(sacc(1)) * const.eyemov_amp/2);
+        
+        % TR 5-8
+        const.saccade_matX(:,eyemov_direc,idx5) = -scr.x_mid;
+        const.saccade_matY(:,eyemov_direc,idx5) = -scr.y_mid;
     end
     
-    step = 4 * size(const.sacc_start,2); % 4 TRs
+    step = 8 * size(const.sacc_start,2); % 8 TRs
     for idx = step+1:step:32
-        const.saccade_matX(:,sacc_amp,idx:idx+step-1) = const.saccade_matX(:,sacc_amp,1:step);
-        const.saccade_matY(:,sacc_amp,idx:idx+step-1) = const.saccade_matY(:,sacc_amp,1:step);
+        const.saccade_matX(:,eyemov_direc,idx:idx+step-1) = const.saccade_matX(:,eyemov_direc,1:step);
+        const.saccade_matY(:,eyemov_direc,idx:idx+step-1) = const.saccade_matY(:,eyemov_direc,1:step);
     end
 end
 

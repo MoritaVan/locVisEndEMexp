@@ -142,12 +142,7 @@ for t = 1:const.seq_num
                 for tAmp = 1:size(const.eyemov_ampVal,2)
                     Screen('FrameOval',scr.main, const.gray, [scr.x_mid - const.eyemov_amp(tAmp)/2, scr.y_mid - const.eyemov_amp(tAmp)/2, scr.x_mid + const.eyemov_amp(tAmp)/2, scr.y_mid + const.eyemov_amp(tAmp)/2])
                 end
-                % spoke refs
-                for tDir = 1:size(const.purs_start,2)
-                    Screen('DrawLine',scr.main,const.gray,scr.x_mid,scr.y_mid,const.pursuit_matX(1,size(const.eyemov_ampVal,2),(tDir-1)*8+1),const.pursuit_matY(1,size(const.eyemov_ampVal,2),(tDir-1)*8+1));
-                end
-%                 Screen('DrawLine',scr.main,const.gray,scr.x_mid*.45,scr.y_mid,scr.x_mid*1.55,scr.y_mid);
-                text = sprintf('trial %d: %s, direction: %s',t,expDes.txt_var1{var1(seq_trial)},expDes.txt_var3{var3(seq_trial)});
+                text = sprintf('trial %d: %s',t,expDes.txt_var1{var1(seq_trial)});
                 Screen('DrawText',scr.main,text,scr.x_mid-50,scr.y_mid-150,const.gray);
             end
             
@@ -173,8 +168,8 @@ for t = 1:const.seq_num
                     % saccade trial
                     if nbf >= 1 && nbf <= size(const.saccade_matX,1)
                         % get coordinates
-                        targetX = const.saccade_matX(nbf,1,seq_trial);
-                        targetY = const.saccade_matY(nbf,1,seq_trial);
+                        targetX = const.saccade_matX(nbf,var2(seq_trial),seq_trial);
+                        targetY = const.saccade_matY(nbf,var2(seq_trial),seq_trial);
                     end
                     
                     drawTarget(scr,const,targetX,targetY);
@@ -237,17 +232,6 @@ for t = 1:const.seq_num
                 end
             end
             
-            if nbf == (const.saccade_fix_num*2+const.saccade_tot_num+1) && var1(seq_trial) == 1 
-                % 2nd saccade onset
-                log_txt                 =   sprintf('sequence %i trial %i 2nd saccade onset at %f',t,seq_trial,GetSecs);
-                if const.writeLogTxt
-                    fprintf(const.log_file_fid,'%s\n',log_txt);
-                end
-                if const.tracker
-                    Eyelink('message','%s',log_txt);
-                end
-            end
-            
             if nbf == 1 && var1(seq_trial) == 2
                 % pursuit trial onset
                 log_txt                 =   sprintf('sequence %i trial %i pursuit onset at %f',t,seq_trial,GetSecs);
@@ -258,18 +242,6 @@ for t = 1:const.seq_num
                     Eyelink('message','%s',log_txt);
                 end
             end
-            
-            if nbf == (const.pursuit_fix_num+const.pursuit_num) && var1(seq_trial) == 2
-                % pursuit offset
-                log_txt                 =   sprintf('sequence %i trial %i pursuit offset at %f',t,seq_trial,GetSecs);
-                if const.writeLogTxt
-                    fprintf(const.log_file_fid,'%s\n',log_txt);
-                end
-                if const.tracker
-                    Eyelink('message','%s',log_txt);
-                end
-            end
-            
 
             % Check keyboard
             % --------------
