@@ -63,8 +63,12 @@ const.add_output_file   =   sprintf('data/%s/add/%s_task-%s%s_%s',const.sjct,con
 % Define .mat saving file
 const.mat_file          =   sprintf('%s_matFile.mat',const.add_output_file);
 
-% Amplitude sequence file
+% Direction sequence file
 const.task_dir_sequence_file =   sprintf('data/%s/add/%s_task_dir_sequence.mat',const.sjct,const.sjct);
+
+% Occlusion sizes file
+const.task_occlusion_file    =   sprintf('data/%s/add/%s_task_occlusion_size.mat',const.sjct,const.sjct);
+
 % Log file
 if const.writeLogTxt
     const.log_file          =   sprintf('%s_logData.txt',const.add_output_file);

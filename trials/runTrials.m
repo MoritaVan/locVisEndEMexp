@@ -164,6 +164,13 @@ for t = 1:const.seq_num
                     end
                     
                     drawTarget(scr,const,targetX,targetY);
+                    
+                    for i = 1:size(const.occlusion,2)
+                        angle    = const.occlusion(var2(seq_trial),i);
+                        size_arc = const.occlusion_size(i);
+                        
+                        drawArc(scr,const,angle,size_arc);
+                    end
                 else
                     % saccade trial
                     if nbf >= 1 && nbf <= size(const.saccade_matX,1)

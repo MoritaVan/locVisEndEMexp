@@ -63,10 +63,8 @@ const.eyemov_start_step =   90;                                                 
 const.eyemov_direc      =   [1 -1];                                                             % eye movement direction (cw/ccw)
 const.purs_steps        =   60;                                                                 % size of each occlusion+pursuit in degrees (3 steps/half circle)
 const.occl_start        =   180:const.purs_steps:360-1;                                         % pursuit start position in degrees (for the second half)
-const.purs_start        =   const.occl_start + randi([300,375],1,4)/10;                         % pursuit start position in degrees (for the second half)
 const.sacc_start        =   45;                                                                 % saccade start position in degrees
 const.sacc_positions    =   45:const.eyemov_start_step:360-1;                                   % saccade positions in degrees
-% const.purs_occl_start   =   mod(const.purs_start + 270 - const.purs_occl_size/2, 360);          % start position of the occlusion in degrees
 
 const.pursuit_fix_dur   =   0.000;                                                              % first fixation duration in seconds
 const.pursuit_fix_num   =   (round(const.pursuit_fix_dur/scr.frame_duration));                  % first fixation duration in screen frames
@@ -115,7 +113,8 @@ end
 
 % compute pursuit coordinates
 % 6 TR = 1 circunference pursuit mov
-for eyemov_direc = 1:size(const.eyemov_direc,2)  
+for eyemov_direc = 1:size(const.eyemov_direc,2)
+    
     % compute a 6-TR mov
     for purs_diameter = 1:size(const.eyemov_amp,2)
         % fixation
@@ -123,7 +122,6 @@ for eyemov_direc = 1:size(const.eyemov_direc,2)
             step1 = 1:const.pursuit_fix_num;
             pursuit_matX(step1,eyemov_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(0);
             pursuit_matY(step1,eyemov_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(0));
-            occlusion(step1,eyemov_direc)    = 0;
         else 
             step1 = 0;
         end
@@ -140,10 +138,6 @@ for eyemov_direc = 1:size(const.eyemov_direc,2)
             pursuit_matX(nbf,eyemov_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(360 + const.eyemov_direc(eyemov_direc)*angle);
             pursuit_matY(nbf,eyemov_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(360 + const.eyemov_direc(eyemov_direc)*angle));
 %             end
-
-            if (angle >= const.occl_start(1) && angle < const.purs_start(1)) || (angle >= const.occl_start(2) && angle < const.purs_start(2)) || (angle >= const.occl_start(3) && angle < const.purs_start(3)) || (angle >= const.occl_start(4) && angle < const.purs_start(4))% occluded arc
-                occlusion(nbf,eyemov_direc) = 1;
-            end
         end
 
         % fixation
@@ -151,7 +145,6 @@ for eyemov_direc = 1:size(const.eyemov_direc,2)
             step3 = (step2(end) + 1):(step2(end) + const.pursuit_end_num);
             pursuit_matX(step3,eyemov_direc) = pursuit_matX(nbf-1,eyemov_direc);
             pursuit_matY(step3,eyemov_direc) = pursuit_matY(nbf-1,eyemov_direc);
-            occlusion(step3,eyemov_direc)    = 0;
         end
     end
 end
@@ -179,8 +172,22 @@ for eyemov_direc = 1:size(const.eyemov_direc,2)
     const.pursuit_matY(:, eyemov_direc, q5) = repmat(pursuit_matY(4*const.eyemov_step_num+1:5*const.eyemov_step_num,eyemov_direc),1,nRep);
     const.pursuit_matY(:, eyemov_direc, q6) = repmat(pursuit_matY(5*const.eyemov_step_num+1:6*const.eyemov_step_num,eyemov_direc),1,nRep);
     
-    const.pursuit_matX(:, eyemov_direc, 31:32) = scr.x_mid + const.eyemov_amp/2 * cosd(const.sacc_start);
-    const.pursuit_matY(:, eyemov_direc, 31:32) = scr.y_mid + const.eyemov_amp/2 * -sind(const.sacc_start);
+    const.pursuit_matX(:, eyemov_direc, 31:32) = scr.x_mid + const.eyemov_amp/2 * cosd(0);
+    const.pursuit_matY(:, eyemov_direc, 31:32) = scr.y_mid + const.eyemov_amp/2 * -sind(0);
+end
+
+% compute occlusion angles
+const.occlusion(1,:)  = const.occl_start-90;
+const.occlusion(2,:)  = mod(const.occlusion(1,:) + 180, 360);
+const.occlusion_size  = randi([const.purs_steps*.7,const.purs_steps*.85],1,3);
+
+if const.runNum == 1
+    occlusion(const.runNum).occlusion_size = [];
+    save(const.task_occlusion_file,'occlusion')
+else
+    load(const.task_occlusion_file)
+    occlusion(const.runNum).occlusion_size = const.occlusion_size;
+    save(const.task_occlusion_file,'occlusion')
 end
 
 % compute saccade coordinates
