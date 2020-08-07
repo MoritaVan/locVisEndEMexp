@@ -29,6 +29,8 @@ const.red               =   [200,0,0];                                          
 const.background_color  =   const.black;                                                        % background color
 const.dot_color         =   const.white;                                                        % define fixation dot color
 
+const.colors_fading     =   flip(round(linspace(0, 255, 15)));                                  % colors for fading target 
+
 % Fixation circular aperture
 const.fix_out_rim_radVal=   0.3;                                                                % radius of outer circle of fixation bull's eye
 const.fix_rim_radVal    =   0.75*const.fix_out_rim_radVal;                                      % radius of intermediate circle of fixation bull's eye in degree
@@ -63,6 +65,7 @@ const.eyemov_start_step =   90;                                                 
 const.eyemov_direc      =   [1 -1];                                                             % eye movement direction (cw/ccw)
 const.purs_steps        =   60;                                                                 % size of each occlusion+pursuit in degrees (3 steps/half circle)
 const.occl_start        =   180:const.purs_steps:360-1;                                         % pursuit start position in degrees (for the second half)
+const.occlusion_size    =   randi([const.purs_steps*.7,const.purs_steps*.85],1,3);              % occlusion angles
 const.sacc_start        =   45;                                                                 % saccade start position in degrees
 const.sacc_positions    =   45:const.eyemov_start_step:360-1;                                   % saccade positions in degrees
 
@@ -95,10 +98,6 @@ if const.scanner
 end
 
 % compute fixation coordinates
-% const.fixation_matX(1:const.fix_fixation_num)                    = scr.x_mid;
-% const.fixation_matY(1:const.fix_fixation_num)                    = scr.y_mid;
-% const.fixation_matX(const.fix_fixation_num+1:const.fix_step_num) = -scr.x_mid;
-% const.fixation_matY(const.fix_fixation_num+1:const.fix_step_num) = -scr.y_mid;
 if const.cond_run_order(const.runNum) == 1 % saccade run
     const.fixation_matX(1:const.fix_fixation_num)                    = scr.x_mid + const.eyemov_amp/2 * cosd(const.sacc_start);
     const.fixation_matY(1:const.fix_fixation_num)                    = scr.y_mid + const.eyemov_amp/2 * (-sind(const.sacc_start));
@@ -111,44 +110,58 @@ else %pursuit run
     const.fixation_matY(const.fix_fixation_num+1:const.fix_step_num) = -scr.y_mid;
 end
 
+
+
 % compute pursuit coordinates
 % 6 TR = 1 circunference pursuit mov
 for eyemov_direc = 1:size(const.eyemov_direc,2)
     
     % compute a 6-TR mov
-    for purs_diameter = 1:size(const.eyemov_amp,2)
-        % fixation
-        if const.pursuit_fix_num > 0
-            step1 = 1:const.pursuit_fix_num;
-            pursuit_matX(step1,eyemov_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(0);
-            pursuit_matY(step1,eyemov_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(0));
-        else 
-            step1 = 0;
-        end
-
-        % eye movement step
-        step2 = (step1(end) + 1):(step1(end) + const.pursuit_num);
-        for nbf = step2
-            angle = (nbf-1)*const.pursuit_ang_step;
-
-%             if (angle >= const.occl_start(1) && angle < const.purs_start(1)) || (angle >= const.occl_start(2) && angle < const.purs_start(2)) || (angle >= const.occl_start(3) && angle < const.purs_start(3)) || (angle >= const.occl_start(4) && angle < const.purs_start(4))% occluded arc
-%                 pursuit_matX(nbf,eyemov_direc) = -scr.x_mid;
-%                 pursuit_matY(nbf,eyemov_direc) = -scr.y_mid;
-%             else
-            pursuit_matX(nbf,eyemov_direc) = scr.x_mid + const.eyemov_amp(purs_diameter)/2 * cosd(360 + const.eyemov_direc(eyemov_direc)*angle);
-            pursuit_matY(nbf,eyemov_direc) = scr.y_mid + const.eyemov_amp(purs_diameter)/2 * (-sind(360 + const.eyemov_direc(eyemov_direc)*angle));
-%             end
-        end
-
-        % fixation
-        if const.pursuit_end_num > 0
-            step3 = (step2(end) + 1):(step2(end) + const.pursuit_end_num);
-            pursuit_matX(step3,eyemov_direc) = pursuit_matX(nbf-1,eyemov_direc);
-            pursuit_matY(step3,eyemov_direc) = pursuit_matY(nbf-1,eyemov_direc);
-        end
+    % fixation
+    if const.pursuit_fix_num > 0
+        step1 = 1:const.pursuit_fix_num;
+        pursuit_matX(step1,eyemov_direc) = scr.x_mid + const.eyemov_amp/2 * cosd(0);
+        pursuit_matY(step1,eyemov_direc) = scr.y_mid + const.eyemov_amp/2 * (-sind(0));
+    else 
+        step1 = 0;
     end
+
+    % eye movement step
+    step2 = (step1(end) + 1):(step1(end) + const.pursuit_num);
+    angleSteps = (step2-1)*const.pursuit_ang_step;
+
+    pursuit_matX(step2,eyemov_direc) = scr.x_mid + const.eyemov_amp/2 * cosd(360 + const.eyemov_direc(eyemov_direc)*angleSteps);
+    pursuit_matY(step2,eyemov_direc) = scr.y_mid + const.eyemov_amp/2 * (-sind(360 + const.eyemov_direc(eyemov_direc)*angleSteps));
+
+    color_mat = nan(length(step2),1);
+
+    idx_fading = [];
+    for i=1:length(const.occlusion_size)
+        idx = find(angleSteps >= const.occl_start(i) & angleSteps < const.occl_start(i)+const.occlusion_size(i));
+        idx_fading = [idx_fading idx];
+
+        % fading
+        color_mat(idx(1:length(const.colors_fading)))         = const.colors_fading';
+        color_mat(idx(end-length(const.colors_fading)+1:end)) = flip(const.colors_fading)';
+
+        % no target
+        color_mat(idx(length(const.colors_fading)+1):idx(end-length(const.colors_fading))) = const.black(1);
+    end
+
+    idx_white  = setdiff(1:length(angleSteps),idx_fading);
+    color_mat(idx_white) = const.white(1);
+
+    % fixation
+    if const.pursuit_end_num > 0
+        step3 = (step2(end) + 1):(step2(end) + const.pursuit_end_num);
+        pursuit_matX(step3,eyemov_direc) = pursuit_matX(step2(end),eyemov_direc);
+        pursuit_matY(step3,eyemov_direc) = pursuit_matY(step2(end),eyemov_direc);
+    end
+    
+
 end
 
+const.color_mat = nan(const.eyemov_step_num,size(const.eyemov_direc,2),const.eyemov_step)
 % repeat movement nRep times / split into 6-TR sequences
 nRep = floor(const.eyemov_step/6);
 q1 = (1:nRep)*6-5;
@@ -174,19 +187,28 @@ for eyemov_direc = 1:size(const.eyemov_direc,2)
     
     const.pursuit_matX(:, eyemov_direc, 31:32) = scr.x_mid + const.eyemov_amp/2 * cosd(0);
     const.pursuit_matY(:, eyemov_direc, 31:32) = scr.y_mid + const.eyemov_amp/2 * -sind(0);
+    
+    const.color_mat(:, eyemov_direc, q1) = repmat(color_mat(0*const.eyemov_step_num+1:1*const.eyemov_step_num),1,nRep);
+    const.color_mat(:, eyemov_direc, q2) = repmat(color_mat(1*const.eyemov_step_num+1:2*const.eyemov_step_num),1,nRep);
+    const.color_mat(:, eyemov_direc, q3) = repmat(color_mat(2*const.eyemov_step_num+1:3*const.eyemov_step_num),1,nRep);
+    const.color_mat(:, eyemov_direc, q4) = repmat(color_mat(3*const.eyemov_step_num+1:4*const.eyemov_step_num),1,nRep);
+    const.color_mat(:, eyemov_direc, q5) = repmat(color_mat(4*const.eyemov_step_num+1:5*const.eyemov_step_num),1,nRep);
+    const.color_mat(:, eyemov_direc, q6) = repmat(color_mat(5*const.eyemov_step_num+1:6*const.eyemov_step_num),1,nRep);
+    
+    const.color_mat(:, eyemov_direc, 31:32) = const.white(1);
 end
 
-% compute occlusion angles
-const.occlusion(1,:)  = const.occl_start-90;
-const.occlusion(2,:)  = mod(const.occlusion(1,:) + 180, 360);
-const.occlusion_size  = randi([const.purs_steps*.7,const.purs_steps*.85],1,3);
-
 if const.runNum == 1
+    occlusion(const.runNum).occlusion_size = [];
+    save(const.task_occlusion_file,'occlusion')
+elseif const.runNum == 3
+    load(const.task_occlusion_file)    
     occlusion(const.runNum).occlusion_size = [];
     save(const.task_occlusion_file,'occlusion')
 else
     load(const.task_occlusion_file)
     occlusion(const.runNum).occlusion_size = const.occlusion_size;
+    occlusion(const.runNum).occl_color_mat = const.color_mat;
     save(const.task_occlusion_file,'occlusion')
 end
 

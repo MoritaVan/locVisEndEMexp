@@ -46,11 +46,6 @@ if const.expStart == 0
     else const.cond2_txt =  'Pur'; end
 else
     const.cond1     =   1;    
-    
-    % if mod(const.sjctNum,2) == 1 % if subj number is odd, starts with pursuit
-    %     const.cond_run_order = circshift(const.cond_run_order,1);
-    % end
-    
     const.cond2     =   const.cond_run_order(const.runNum);
     if const.cond2 == 1 
         const.cond2_txt 	=  'Sac';

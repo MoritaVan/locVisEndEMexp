@@ -65,7 +65,7 @@ for t = 1:const.seq_num
     if t == 1
         % show the iti image
         Screen('FillRect',scr.main,const.background_color);
-        drawTarget(scr,const,scr.x_mid,scr.y_mid);
+        drawTarget(scr,const,scr.x_mid,scr.y_mid,const.white);
         Screen('Flip',scr.main);
         
         first_trigger           =   0;
@@ -151,7 +151,7 @@ for t = 1:const.seq_num
             if var2(seq_trial) == 3
                 targetX = const.fixation_matX(nbf);
                 targetY = const.fixation_matY(nbf);
-                drawTarget(scr,const,targetX,targetY);
+                drawTarget(scr,const,targetX,targetY,const.white);
             else
                 % eye movement sequence
                 
@@ -161,16 +161,11 @@ for t = 1:const.seq_num
                         % get coordinates
                         targetX = const.pursuit_matX(nbf,var2(seq_trial),seq_trial);
                         targetY = const.pursuit_matY(nbf,var2(seq_trial),seq_trial);
+                        color   = repmat(const.color_mat(nbf,var2(seq_trial),seq_trial),1,3);
                     end
                     
-                    drawTarget(scr,const,targetX,targetY);
-                    
-                    for i = 1:size(const.occlusion,2)
-                        angle    = const.occlusion(var2(seq_trial),i);
-                        size_arc = const.occlusion_size(i);
-                        
-                        drawArc(scr,const,angle,size_arc);
-                    end
+                    drawTarget(scr,const,targetX,targetY,color);
+
                 else
                     % saccade trial
                     if nbf >= 1 && nbf <= size(const.saccade_matX,1)
@@ -179,7 +174,7 @@ for t = 1:const.seq_num
                         targetY = const.saccade_matY(nbf,var2(seq_trial),seq_trial);
                     end
                     
-                    drawTarget(scr,const,targetX,targetY);
+                    drawTarget(scr,const,targetX,targetY,const.white);
                 end
             end
 
