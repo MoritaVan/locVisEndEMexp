@@ -43,27 +43,27 @@ expDes.txt_var2         =   {'ccw','cw','none'};
 
 % Var 3 : eye movement start position (9 modalities)
 % ======
-expDes.threeV           =   [01, 02;
-                             01, 10;
-                             01, 02;
-                             01, 10;
-                             01, 02;
-                             01, 10;
-                             01, 02;
-                             01, 10;
-                             17, 17];
+expDes.threeV           =   [01, 02, 02;
+                             01, 04, 08;
+                             01, 06, 06;
+                             01, 08, 04;
+                             01, 02. 02;
+                             01, 04, 08;
+                             01, 06, 06;
+                             01, 08, 04;
+                             17, 17, 17];
 expDes.txt_var3=   {  '0 deg',  '45 deg',  '90 deg', '135 deg', '180 deg', '225 deg', '270 deg', '315 deg',...
                     '180 deg', '225 deg', '270 deg', '315 deg',   '0 deg',  '45 deg',  '90 deg', '135 deg',...
                        'none'};
-% pursuit           saccade
-% 01 =   0.0 deg    01 =  45.0 deg
-% 02 =   0.0 deg    02 = 225.0 deg
-% 03 =   0.0 deg    03 = 135.0 deg
-% 04 =   0.0 deg    04 = 315.0 deg
-% 05 =   0.0 deg    05 = 225.0 deg
-% 06 =   0.0 deg    06 =  45.0 deg
-% 07 =   0.0 deg    07 = 315.0 deg
-% 08 =   0.0 deg    08 = 135.0 deg
+% pursuit           saccade         saccade ccw
+% 01 =   0.0 deg    01 =  45.0 deg  01 =  45.0 deg  
+% 02 =   0.0 deg    02 = 135.0 deg  02 = 315.0 deg  
+% 03 =   0.0 deg    03 = 225.0 deg  03 = 225.0 deg  
+% 04 =   0.0 deg    04 = 315.0 deg  04 = 135.0 deg  
+% 05 =   0.0 deg    05 =  45.0 deg  05 =  45.0 deg 
+% 06 =   0.0 deg    06 = 135.0 deg  06 = 315.0 deg
+% 07 =   0.0 deg    07 = 225.0 deg  07 = 225.0 deg
+% 08 =   0.0 deg    08 = 315.0 deg  08 = 135.0 deg
 % 17 = none  
 
 % Var 4 : trial types 2 (3 modalities)
@@ -144,17 +144,25 @@ for t_seq = 1:size(const.eyemov_seq,2)
                 idx = seq_step;
             end
             if const.cond2 == 1 % saccade run
-                rand_var3 = expDes.threeV(idx,2);
-                if mod(seq_step,4) == 0 || mod(seq_step,4) == 3
+                if rand_var2 == 1 % ccw
+                    rand_var3 = expDes.threeV(idx,3);
+                else % cw
+                    rand_var3 = expDes.threeV(idx,2);
+                end
+                
+                if mod(seq_step,8) > 4 || mod(seq_step,8) == 0 % end
                     rand_var4 = expDes.fourV(2);
-                else
+                else % vis
                     rand_var4 = expDes.fourV(1);
                 end
-            else
+                
+            else % pursuit run
                 rand_var3 = expDes.threeV(idx,1);
-                if mod(seq_step,2) == 0
+                if mod(seq_step,31) == 0 || mod(seq_step,32) == 0 % none
+                    rand_var4 = expDes.fourV(3);
+                elseif mod(seq_step,6) > 3 || mod(seq_step,6) == 0 % end
                     rand_var4 = expDes.fourV(2);
-                else
+                else % vis
                     rand_var4 = expDes.fourV(1);
                 end
             end

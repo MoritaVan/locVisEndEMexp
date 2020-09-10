@@ -23,9 +23,9 @@ end
 
 
 if const.cond_run_num(const.runNum) > 9
-    const.run_txt   =  sprintf('run%i',const.cond_run_num(const.runNum));
+    const.run_txt   =  sprintf('run-%i',const.cond_run_num(const.runNum));
 else
-    const.run_txt   =  sprintf('run0%i',const.cond_run_num(const.runNum));
+    const.run_txt   =  sprintf('run-0%i',const.cond_run_num(const.runNum));
 end
 
 

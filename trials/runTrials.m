@@ -208,7 +208,7 @@ for t = 1:const.seq_num
                 if const.tracker
                     Eyelink('message','%s',log_txt);
                 end
-                expDes.expMat(trials_idx(seq_trial),9) =   GetSecs;
+                expDes.expMat(trials_idx(seq_trial),11) =   GetSecs;
             end
             
             if nbf == const.TR_num
@@ -220,7 +220,7 @@ for t = 1:const.seq_num
                 if const.tracker
                     Eyelink('message','%s',log_txt);
                 end
-                expDes.expMat(trials_idx(seq_trial),10)  =   GetSecs;
+                expDes.expMat(trials_idx(seq_trial),12)  =   GetSecs;
             end
             
             if nbf == const.saccade_fix_num+1 && var1(seq_trial) == 1
