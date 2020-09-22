@@ -73,8 +73,8 @@ rect_ctr                =   [scr.x_mid,scr.y_mid];
 eyeLinkDrawBox(rect_ctr(1),rect_ctr(2),const.fix_out_rim_rad*2,const.fix_out_rim_rad*2,2,frameCol,ftCol);
 
 % Amplitude boxes
-for tAmp = 1:4
-    eyeLinkDrawBox(rect_ctr(1),rect_ctr(2),const.eyemov_amp(tAmp)*2,const.eyemov_amp(tAmp)*2,1,frameCol,ftCol);
+for tAmp = 1%:4
+    eyeLinkDrawBox(rect_ctr(1),rect_ctr(2),const.eyemov_amp(tAmp),const.eyemov_amp(tAmp),1,frameCol,ftCol);
 end
 
 WaitSecs(0.1);

@@ -36,8 +36,8 @@ for t = 1:const.seq_num
     % ---------------------------------
 
     % trials number in this sequence    
-    seq_trials_mat = expDes.expMat(:,8) == t;
-    seq_trials     = expDes.expMat(seq_trials_mat,9);
+    seq_trials_mat = expDes.expMat(:,9) == t;
+    seq_trials     = expDes.expMat(seq_trials_mat,10);
 	trials_idx     = expDes.expMat(seq_trials_mat,2);
 
     % Cond1 : Task
@@ -46,23 +46,26 @@ for t = 1:const.seq_num
     % Var 1 : eye movement type
     var1  = expDes.expMat(seq_trials_mat,4);
     
-    % Var 2 : eye movement amplitude
+    % Var 2 : eye movement direction
     var2  = expDes.expMat(seq_trials_mat,5);
     
     % Var 3 : eye movement start position
     var3  = expDes.expMat(seq_trials_mat,6);
+    
+    % Var 4 : eye movement amplitude
+    var4 = expDes.expMat(seq_trials_mat,8);
 
     if const.checkTrial && const.expStart == 0
         fprintf(1,'\n\n\t========================  SEQ %3.0f ========================\n',t);
         fprintf(1,'\n\tTask                         =\t%s',expDes.txt_cond1{cond1(1)});
-        fprintf(1,'\n\tEye movement amplitude       =\t%s',expDes.txt_var2{var2(1)});
+        fprintf(1,'\n\tEye movement direction       =\t%s',expDes.txt_var2{var2(1)});
     end
 
     % wait first trigger in trial beginning
     if t == 1
         % show the iti image
         Screen('FillRect',scr.main,const.background_color);
-        drawTarget(scr,const,scr.x_mid,scr.y_mid);
+        drawTarget(scr,const,scr.x_mid,scr.y_mid,const.white);
         Screen('Flip',scr.main);
         
         first_trigger           =   0;
@@ -120,7 +123,7 @@ for t = 1:const.seq_num
         
         if const.checkTrial && const.expStart == 0
             fprintf(1,'\n\tEye movement type            =\t%s',expDes.txt_var1{var1(seq_trial)});
-            fprintf(1,'\n\tEye movement direction       =\t%s',expDes.txt_var3{var3(seq_trial)});
+            fprintf(1,'\n\tEye movement direction       =\t%s',expDes.txt_var2{var2(seq_trial)});
             
         end
         
@@ -139,21 +142,16 @@ for t = 1:const.seq_num
                 for tAmp = 1:size(const.eyemov_ampVal,2)
                     Screen('FrameOval',scr.main, const.gray, [scr.x_mid - const.eyemov_amp(tAmp)/2, scr.y_mid - const.eyemov_amp(tAmp)/2, scr.x_mid + const.eyemov_amp(tAmp)/2, scr.y_mid + const.eyemov_amp(tAmp)/2])
                 end
-                % spoke refs
-                for tDir = 1:size(const.purs_start,2)
-                    Screen('DrawLine',scr.main,const.gray,scr.x_mid,scr.y_mid,const.pursuit_matX(1,size(const.eyemov_ampVal,2),(tDir-1)*8+1),const.pursuit_matY(1,size(const.eyemov_ampVal,2),(tDir-1)*8+1));
-                end
-%                 Screen('DrawLine',scr.main,const.gray,scr.x_mid*.45,scr.y_mid,scr.x_mid*1.55,scr.y_mid);
-                text = sprintf('trial %d: %s, direction: %s',t,expDes.txt_var1{var1(seq_trial)},expDes.txt_var3{var3(seq_trial)});
+                text = sprintf('trial %d: %s',t,expDes.txt_var1{var1(seq_trial)});
                 Screen('DrawText',scr.main,text,scr.x_mid-50,scr.y_mid-150,const.gray);
             end
             
             % Draw target
             % fixation sequence
-            if var2(seq_trial) == 5
+            if var2(seq_trial) == 3
                 targetX = const.fixation_matX(nbf);
                 targetY = const.fixation_matY(nbf);
-                drawTarget(scr,const,targetX,targetY);
+                drawTarget(scr,const,targetX,targetY,const.white);
             else
                 % eye movement sequence
                 
@@ -163,9 +161,11 @@ for t = 1:const.seq_num
                         % get coordinates
                         targetX = const.pursuit_matX(nbf,var2(seq_trial),seq_trial);
                         targetY = const.pursuit_matY(nbf,var2(seq_trial),seq_trial);
+                        color   = repmat(const.color_mat(nbf,var2(seq_trial),seq_trial),1,3);
                     end
                     
-                    drawTarget(scr,const,targetX,targetY);
+                    drawTarget(scr,const,targetX,targetY,color);
+
                 else
                     % saccade trial
                     if nbf >= 1 && nbf <= size(const.saccade_matX,1)
@@ -174,7 +174,7 @@ for t = 1:const.seq_num
                         targetY = const.saccade_matY(nbf,var2(seq_trial),seq_trial);
                     end
                     
-                    drawTarget(scr,const,targetX,targetY);
+                    drawTarget(scr,const,targetX,targetY,const.white);
                 end
             end
 
@@ -208,7 +208,7 @@ for t = 1:const.seq_num
                 if const.tracker
                     Eyelink('message','%s',log_txt);
                 end
-                expDes.expMat(trials_idx(seq_trial),9) =   GetSecs;
+                expDes.expMat(trials_idx(seq_trial),11) =   GetSecs;
             end
             
             if nbf == const.TR_num
@@ -220,23 +220,12 @@ for t = 1:const.seq_num
                 if const.tracker
                     Eyelink('message','%s',log_txt);
                 end
-                expDes.expMat(trials_idx(seq_trial),10)  =   GetSecs;
+                expDes.expMat(trials_idx(seq_trial),12)  =   GetSecs;
             end
             
             if nbf == const.saccade_fix_num+1 && var1(seq_trial) == 1
                 % saccade onset
                 log_txt                 =   sprintf('sequence %i trial %i saccade onset at %f',t,seq_trial,GetSecs);
-                if const.writeLogTxt
-                    fprintf(const.log_file_fid,'%s\n',log_txt);
-                end
-                if const.tracker
-                    Eyelink('message','%s',log_txt);
-                end
-            end
-            
-            if nbf == (const.saccade_fix_num*2+const.saccade_tot_num+1) && var1(seq_trial) == 1 
-                % 2nd saccade onset
-                log_txt                 =   sprintf('sequence %i trial %i 2nd saccade onset at %f',t,seq_trial,GetSecs);
                 if const.writeLogTxt
                     fprintf(const.log_file_fid,'%s\n',log_txt);
                 end
@@ -255,18 +244,6 @@ for t = 1:const.seq_num
                     Eyelink('message','%s',log_txt);
                 end
             end
-            
-            if nbf == (const.pursuit_fix_num+const.pursuit_num) && var1(seq_trial) == 2
-                % pursuit offset
-                log_txt                 =   sprintf('sequence %i trial %i pursuit offset at %f',t,seq_trial,GetSecs);
-                if const.writeLogTxt
-                    fprintf(const.log_file_fid,'%s\n',log_txt);
-                end
-                if const.tracker
-                    Eyelink('message','%s',log_txt);
-                end
-            end
-            
 
             % Check keyboard
             % --------------

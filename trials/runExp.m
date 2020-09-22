@@ -102,7 +102,7 @@ if const.tracker
     eyeLinkClearScreen(el.bgCol);
     eyeLinkDrawText(scr.x_mid,scr.y_mid,el.txtCol,'TASK INSTRUCTIONS - PRESS SPACE')
 end
-instructionsIm(scr,const,my_key,sprintf('%s%s',const.cond1_txt,scanTxt),0);
+instructionsIm(scr,const,my_key,sprintf('%s%s%s',const.cond2_txt,const.cond1_txt,scanTxt),0);
 for keyb = 1:size(my_key.keyboard_idx,2)
     KbQueueFlush(my_key.keyboard_idx(keyb));
 end
@@ -119,17 +119,18 @@ end
 
 % Compute/Write mean/std behavioral data
 % --------------------------------------
-behav_txt_head{1}       =   'onset';                        behav_mat_res{1}        =   expDes.expMat(:,10);
-behav_txt_head{2}       =   'duration';                     behav_mat_res{2}        = 	expDes.expMat(:,11)-expDes.expMat(:,10);
+behav_txt_head{1}       =   'onset';                        behav_mat_res{1}        =   expDes.expMat(:,11);
+behav_txt_head{2}       =   'duration';                     behav_mat_res{2}        = 	expDes.expMat(:,12)-expDes.expMat(:,11);
 behav_txt_head{3}       =   'run_number';                   behav_mat_res{3}        = 	expDes.expMat(:,1);
 behav_txt_head{4}       =   'trial_number';                 behav_mat_res{4}        = 	expDes.expMat(:,2);
 behav_txt_head{5}       =   'task';                         behav_mat_res{5}        = 	expDes.expMat(:,3);
 behav_txt_head{6}       =   'trial_type';                   behav_mat_res{6}        = 	expDes.expMat(:,4);
-behav_txt_head{7}       =   'eyemov_amplitude';             behav_mat_res{7}        = 	expDes.expMat(:,5);
+behav_txt_head{7}       =   'eyemov_direction';             behav_mat_res{7}        = 	expDes.expMat(:,5);
 behav_txt_head{8}       =   'eyemov_start_pos';             behav_mat_res{8}        = 	expDes.expMat(:,6);
 behav_txt_head{9}       =   'eyemov_vis_end';               behav_mat_res{9}        = 	expDes.expMat(:,7);
-behav_txt_head{10}      =   'sequence_num';                 behav_mat_res{10}       = 	expDes.expMat(:,8);
-behav_txt_head{11}      =   'sequence_trial';               behav_mat_res{11}       = 	expDes.expMat(:,9);
+behav_txt_head{10}      =   'eyemov_amplitude';             behav_mat_res{10}       =   expDes.expMat(:,8);
+behav_txt_head{11}      =   'sequence_num';                 behav_mat_res{11}       = 	expDes.expMat(:,9);
+behav_txt_head{12}      =   'sequence_trial';               behav_mat_res{12}       = 	expDes.expMat(:,10);
 
 head_line               =   [];
 for trial = 1:expDes.nb_trials
