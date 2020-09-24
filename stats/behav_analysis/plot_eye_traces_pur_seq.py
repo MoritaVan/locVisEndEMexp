@@ -112,7 +112,7 @@ for run in runs:
         
         data_logic = np.logical_and.reduce(np.array((run_eye_data_logic,seq_eye_data_logic)))
 
-        time = (eye_data[data_logic][:,0]-eye_data[data_logic][0,0])/1000
+        time = (eye_data[data_logic][:,0]-eye_data[data_logic][0,0])/1000 # in sec
         
         angleSteps = np.linspace(0,5*2*np.pi,len(time))
         x_pos = 9.6 * np.cos(dir_sequence[sequence-1]*angleSteps)
@@ -120,6 +120,8 @@ for run in runs:
 
         mse_x = np.nanmean(np.square(np.subtract(x_pos,eye_data[data_logic,1])))
         mse_y = np.nanmean(np.square(np.subtract(y_pos,eye_data[data_logic,2])))
+        
+        time_sac = round(np.sum(np.isnan(eye_data[data_logic,2]))/1000,2)
 
         fig = plt.figure(figsize=(10,15))
         plt.suptitle('Run {run_txt} - Seq {sequence_txt}'.format(run_txt = run+1, sequence_txt = sequence), fontsize = 14)
@@ -146,7 +148,7 @@ for run in runs:
         plt.ylabel('Position (deg)')
         plt.title('Screen view')
         plt.subplot(3,2,6)
-        plt.text(.3, .5, 'MSE - x-axis: {mse_x}\nMSE - y-axis: {mse_y}'.format(mse_x = format(mse_x,'.2f'), mse_y = format(mse_y,'.2f')))
+        plt.text(.3, .5, 'MSE - x-axis: {mse_x}\nMSE - y-axis: {mse_y}\nSaccades: {time_sac}s of {time_max}s'.format(mse_x = format(mse_x,'.2f'), mse_y = format(mse_y,'.2f'), time_sac = time_sac, time_max = format(np.max(time),'.2f')))
         plt.axis('off')
 
         plt.savefig("{file_dir}/add/figures/{task}/run-{run_txt}/{sub}_task-{task}_run-{run_txt}_seq-{seq_txt}_eyetraces.png".format(
