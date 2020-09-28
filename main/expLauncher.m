@@ -10,8 +10,6 @@
 % Experiment consists of a localiser
 % - visually guided vs endogenous (saccades, pursuit, fixation)
 
-
-
 % First settings
 % --------------
 Screen('CloseAll');clear all;clear mex;clear functions;close all;home;AssertOpenGL;
