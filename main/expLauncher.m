@@ -26,10 +26,11 @@ const.mkVideo           =   0;              % Make a video of a run (on mac not 
 
 % External controls
 % -----------------
-const.tracker           =   0;              % run with eye tracker                              0 = NO  , 1 = YES
+const.tracker           =   1;              % run with eye tracker                              0 = NO  , 1 = YES
 const.scanner           =   0;              % run in MRI scanner                                0 = NO  , 1 = YES
 const.scannerTest       =   1;              % run with T returned at TR time                    0 = NO  , 1 = YES
 const.room              =   2;              % run in MRI or eye-tracking room                   1 = MRI , 2 = eye-tracking
+const.training          =   1;              % training session                                  0 = NO  , 1 = YES
 
 % Run order
 % ---------
@@ -37,6 +38,7 @@ const.cond_run_order = [1;...               % run 01 - Sac
                         2;...               % run 02 - Pur      
                         1;...               % run 03 - Sac      
                         2];                 % run 04 - Pur     
+                    
 % Run number per condition
 % ------------------------
 const.cond_run_num   = [01;01;...
@@ -44,8 +46,8 @@ const.cond_run_num   = [01;01;...
 
 % Desired screen setting
 % ----------------------
-const.desiredFD         =   60;            % Desired refresh rate
-fprintf(1,'\n\n\tDon''t forget to change before testing\n');
+const.desiredFD         =   120;            % Desired refresh rate
+%fprintf(1,'\n\n\tDon''t forget to change before testing\n');
 const.desiredRes        =   [1920,1080];    % Desired resolution
 
 % Path
@@ -65,13 +67,3 @@ addpath('config','main','conversion','eyeTracking','instructions','trials','stim
 % Main run
 % --------
 main(const);
-
-
-
-
-
-
-
-
-
-
