@@ -161,7 +161,7 @@ for eyemov_direc = 1:size(const.eyemov_direc,2)
 
 end
 
-const.color_mat = nan(const.eyemov_step_num,size(const.eyemov_direc,2),const.eyemov_step)
+const.color_mat = nan(const.eyemov_step_num,size(const.eyemov_direc,2),const.eyemov_step);
 % repeat movement nRep times / split into 6-TR sequences
 nRep = floor(const.eyemov_step/6);
 q1 = (1:nRep)*6-5;
@@ -200,16 +200,16 @@ end
 
 if const.runNum == 1
     occlusion(const.runNum).occlusion_size = [];
-    save(const.task_occlusion_file,'occlusion')
+    save(const.task_occlusion_file,'occlusion');
 elseif const.runNum == 3
     load(const.task_occlusion_file)    
     occlusion(const.runNum).occlusion_size = [];
-    save(const.task_occlusion_file,'occlusion')
+    save(const.task_occlusion_file,'occlusion');
 else
     load(const.task_occlusion_file)
     occlusion(const.runNum).occlusion_size = const.occlusion_size;
     occlusion(const.runNum).occl_color_mat = const.color_mat;
-    save(const.task_occlusion_file,'occlusion')
+    save(const.task_occlusion_file,'occlusion');
 end
 
 % compute saccade coordinates

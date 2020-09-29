@@ -98,7 +98,7 @@ seq_type = analysis_info['seq_type']
 # ---------
 file_dir = '{exp_dir}/data/{sub}'.format(exp_dir = main_dir, sub = subject)
 h5_filename = "{file_dir}/add/{sub}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, task = task)
-h5_file = h5py.File(h5_filename,'a')
+h5_file = h5py.File(h5_filename,'r')
 folder_alias = 'eye_traces'
 eye_data_runs = np.array(h5_file['{folder_alias}/eye_data_runs'.format(folder_alias = folder_alias)])
 eye_data_runs_nan_blink = np.array(h5_file['{folder_alias}/eye_data_runs_nan_blink'.format(folder_alias = folder_alias)])
@@ -106,7 +106,8 @@ time_start_seq = np.array(h5_file['{folder_alias}/time_start_seq'.format(folder_
 time_end_seq = np.array(h5_file['{folder_alias}/time_end_seq'.format(folder_alias = folder_alias)])
 time_start_trial = np.array(h5_file['{folder_alias}/time_start_trial'.format(folder_alias = folder_alias)])
 time_end_trial = np.array(h5_file['{folder_alias}/time_end_trial'.format(folder_alias = folder_alias)])
-dir_sequence = np.array(h5_file['{folder_alias}/dir_sequence'.format(folder_alias = folder_alias)])[0]
+dir_sequence = np.array(h5_file['{folder_alias}/dir_sequence'.format(folder_alias = folder_alias)])
+dir_sequence = np.concatenate((dir_sequence,dir_sequence),axis=0)
 
 # Get saccade model
 # -----------------
@@ -126,11 +127,15 @@ for run in runs:
 	# print('run: {}'.format(run))
 	run_data_logic = eye_data_runs[:,3] == run
 
+	dir_idx=-1
 	for sequence in sequences:
 		# print('sequence: {}'.format(sequence))
 		trials = np.arange(0,trials_seq[sequence],1)
 		seq_data_logic = np.logical_and(eye_data_runs[:,0] >= time_start_seq[sequence,run],\
 										eye_data_runs[:,0] <= time_end_seq[sequence,run])
+										
+		if (seq_type[sequence] != 0):
+			dir_idx = dir_idx+1 
 
 		trial_with_sac = 0
 		for trial in trials:
@@ -142,13 +147,13 @@ for run in runs:
 
 			amp_sac = rads[-1]
 			# fixation target position
-			if (dir_sequence[sequence] == 3) :
+			if (seq_type[sequence] == 0) :
 				dir_sac = 0
 				fix_pos_x, fix_pos_y = np.round(np.cos(polar_ang[0])*amp_sac,decimals=3),\
 								   	   np.round(np.sin(polar_ang[0])*amp_sac,decimals=3)
 				sac_pos_x, sac_pos_y = np.round(np.cos(polar_ang[0])*amp_sac,decimals=3),\
 								   	   np.round(np.sin(polar_ang[0])*amp_sac,decimals=3)
-			elif (dir_sequence[sequence] == 1) : # ccw
+			elif (dir_sequence[dir_idx] == 1) : # ccw
 				fix_pos_x, fix_pos_y = np.round(np.cos(polar_ang[np.mod(trial_with_sac,4)])*amp_sac,decimals=3),\
 								   	   np.round(np.sin(polar_ang[np.mod(trial_with_sac,4)])*amp_sac,decimals=3)
 				sac_pos_x, sac_pos_y = np.round(np.cos(polar_ang[np.mod(trial_with_sac+1,4)])*amp_sac,decimals=3),\
