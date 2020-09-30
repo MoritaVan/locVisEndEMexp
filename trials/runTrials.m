@@ -67,7 +67,7 @@ for t = 1:const.seq_num
         Screen('FillRect',scr.main,const.background_color);
         targetX = const.fixation_matX(0);
         targetY = const.fixation_matY(0);
-        drawTarget(scr,const,targetX,targetY,const.white);
+        drawEmptyTarget(scr,const,targetX,targetY,const.white);
         Screen('Flip',scr.main);
         
         first_trigger           =   0;
