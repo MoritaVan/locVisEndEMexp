@@ -111,11 +111,11 @@ param_exp = {# Mandatory :
               }
 
 sacc_params = {
-        'mindur': 1,
+        'mindur': 5,
         'maxdur': 100,
-        'minsep': 2,
-        'before_sacc': 5,
-        'after_sacc': 10
+        'minsep': 5,
+        'before_sacc': 50,
+        'after_sacc': 50
 }
 # default:
 #     'mindur': 5,
@@ -178,10 +178,10 @@ for run in runs:
         A   = ANEMO(param_exp)
 
         velocity_deg_x = A.velocity_deg(data_x = eye_data[data_logic,1],
-                            filt = 'velocity-position', cutoff = 30, sample_rate = 1000)
+                            filt = 'position', cutoff = 30, sample_rate = 1000)
 
         velocity_deg_y = A.velocity_deg(data_x = eye_data[data_logic,2],
-                            filt = 'velocity-position', cutoff = 30, sample_rate = 1000)
+                            filt = 'position', cutoff = 30, sample_rate = 1000)
 
         misac = A.detec_misac(velocity_x = velocity_deg_x,
                                 velocity_y = velocity_deg_y,
@@ -199,9 +199,11 @@ for run in runs:
             idx = np.logical_and(eye_data[data_logic,0] >= sacc[0], eye_data[data_logic,0] < sacc[1])
             velocity_x_NAN[idx] = np.nan
             velocity_y_NAN[idx] = np.nan
-            eye_data[data_logic][idx,1:3] = np.nan
+            tmp = eye_data[data_logic,1:3]
+            tmp[idx,:] = np.nan
+            eye_data[data_logic,1:3] = tmp
 
-        time_sac = round(np.sum(np.isnan(eye_data[data_logic,2]))/1000,2) # sum of saccades' time
+        time_sac = round(np.sum(np.isnan(velocity_x_NAN))/1000,2) # sum of saccades' time
 
         fig = plt.figure(figsize=(25,10))
         plt.suptitle('Run {run_txt} - Seq {sequence_txt}'.format(run_txt = run+1, sequence_txt = sequence), fontsize = 14)
@@ -213,7 +215,7 @@ for run in runs:
         plt.xlabel('Time (s)')
         plt.ylabel('Position (deg)')
         plt.title('X axis')
-        plt.subplot(5,2,(6,7))
+        plt.subplot(2,5,(6,7))
         plt.fill_between(time, -20, 20, where=occlusion, color='gray', alpha=0.1, interpolate=True)
         plt.plot(time,eye_data[data_logic,2],color = colmap[col_idx],linewidth = axis_width*2)
         plt.plot(time,y_pos,color = 'k',linewidth = axis_width*1)
@@ -221,21 +223,21 @@ for run in runs:
         plt.xlabel('Time (s)')
         plt.ylabel('Position (deg)')
         plt.title('Y axis')
-        plt.subplot(5,2,(3,4))
+        plt.subplot(2,5,(3,4))
         plt.fill_between(time, -20, 20, where=occlusion, color='gray', alpha=0.1, interpolate=True)
         plt.plot(time,velocity_x_NAN,color = colmap[col_idx],linewidth = axis_width*2)
         plt.ylim((-20,20))
         plt.xlabel('Time (s)')
         plt.ylabel('Velocity')
         plt.title('X axis')
-        plt.subplot(5,2,(8,9))
+        plt.subplot(2,5,(8,9))
         plt.fill_between(time, -20, 20, where=occlusion, color='gray', alpha=0.1, interpolate=True)
         plt.plot(time,velocity_y_NAN,color = colmap[col_idx],linewidth = axis_width*2)
         plt.ylim((-20,20))
         plt.xlabel('Time (s)')
         plt.ylabel('Velocity')
         plt.title('Y axis')
-        plt.subplot(5,2,5)
+        plt.subplot(2,5,5)
         plt.plot(eye_data[data_logic,1],eye_data[data_logic,2],color = colmap[col_idx+1],linewidth = axis_width*1.5)
         plt.plot(x_pos,y_pos,color = 'k',linewidth = axis_width*1)
         plt.xlim((-20,20))
@@ -243,7 +245,7 @@ for run in runs:
         plt.xlabel('Position (deg)')
         plt.ylabel('Position (deg)')
         plt.title('Screen view')
-        plt.subplot(5,2,10)
+        plt.subplot(2,5,10)
         plt.text(.3, .5, 'MSE - x-axis: {mse_x}\nMSE - y-axis: {mse_y}\nSaccades: {time_sac}s of {time_max}s'.format(mse_x = format(mse_x,'.2f'), mse_y = format(mse_y,'.2f'), time_sac = time_sac, time_max = format(np.max(time),'.2f')))
         plt.axis('off')
 
