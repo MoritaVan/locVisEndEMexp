@@ -39,7 +39,7 @@ vals_all[:,24]:	microsaccade detected (<1 dva)
 -----------------------------------------------------------------------------------------
 To run:
 cd /Users/martin/Dropbox/Experiments/pMFexp/stats/
-python behav_analysis/extract_saccades.py sub-01 EyeMov
+python behav_analysis/extract_saccades.py sub-01 EyeMov ses-01
 -----------------------------------------------------------------------------------------
 """
 
@@ -66,7 +66,8 @@ from sac_utils import vecvel, microsacc_merge, saccpar, isincircle
 # Get inputs
 # ----------
 subject = sys.argv[1]
-task = sys.argv[2]
+task    = sys.argv[2]
+session = sys.argv[3]
 
 # Define analysis parameters
 # --------------------------
@@ -85,7 +86,10 @@ elif platform.system() == 'Windows':
 elif platform.system() == 'Linux':
     main_dir = analysis_info['main_dir_unix']
 
-runs = np.arange(0,analysis_info['num_run'],1)
+if subject[-1]=='t':
+    runs = np.arange(0,analysis_info['num_run_t'],1)
+else:
+    runs = np.arange(0,analysis_info['num_run'],1)
 sequences = np.arange(0,analysis_info['num_seq'],1)
 trials_seq = analysis_info['trials_seq']
 rads = analysis_info['rads']
@@ -96,8 +100,8 @@ seq_type = analysis_info['seq_type']
 
 # Load data
 # ---------
-file_dir = '{exp_dir}/data/{sub}'.format(exp_dir = main_dir, sub = subject)
-h5_filename = "{file_dir}/add/{sub}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, task = task)
+file_dir = '{exp_dir}/data/{sub}/{ses}'.format(exp_dir = main_dir, sub = subject, ses = session)
+h5_filename = "{file_dir}/add/{sub}_{ses}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, ses = session, task = task)
 h5_file = h5py.File(h5_filename,'r')
 folder_alias = 'eye_traces'
 eye_data_runs = np.array(h5_file['{folder_alias}/eye_data_runs'.format(folder_alias = folder_alias)])
@@ -349,7 +353,7 @@ for tBlink in np.arange(0,blinkNum,1):
 
 # Save all
 # --------
-h5_file = "{file_dir}/add/{sub}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, task = task)
+h5_file = "{file_dir}/add/{sub}_{ses}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, ses = session, task = task)
 
 h5file = h5py.File(h5_file, "a")
 folder_alias = 'eye_traces'

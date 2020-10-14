@@ -14,7 +14,7 @@ h5 files with loads of data on eye traces across seqs
 -----------------------------------------------------------------------------------------
 To run:
 cd /Users/martin/Dropbox/Experiments/pMFexp/stats/
-python behav_analysis/plot_eye_traces_pur_seq.py sub-01
+python behav_analysis/plot_eye_traces_pur_seq.py sub-01 ses-01
 -----------------------------------------------------------------------------------------
 """
 
@@ -42,6 +42,7 @@ deb = ipdb.set_trace
 # Get inputs
 # ----------
 subject = sys.argv[1]
+session = sys.argv[2]
 
 # Define analysis parameters
 # --------------------------
@@ -60,7 +61,10 @@ elif platform.system() == 'Windows':
 elif platform.system() == 'Linux':
     main_dir = analysis_info['main_dir_unix']
 
-runs = np.arange(0,analysis_info['num_run'],1)
+if subject[-1]=='t':
+    runs = np.arange(0,analysis_info['num_run_t'],1)
+else:
+    runs = np.arange(0,analysis_info['num_run'],1)
 eye_mov_seq = analysis_info['eye_mov_seq']
 seq_trs = analysis_info['seq_trs']
 pursuits_tr = np.arange(0,seq_trs,2)
@@ -68,8 +72,8 @@ saccades_tr = np.arange(1,seq_trs,2)
 
 # Load data
 # ---------
-file_dir = '{exp_dir}/data/{sub}'.format(exp_dir = main_dir, sub = subject)
-h5_filename = "{file_dir}/add/{sub}_task-PurVELoc_eyedata.h5".format(file_dir = file_dir, sub = subject)
+file_dir = '{exp_dir}/data/{sub}/{ses}'.format(exp_dir = main_dir, sub = subject, ses = session)
+h5_filename = "{file_dir}/add/{sub}_{ses}_task-PurVELoc_eyedata.h5".format(file_dir = file_dir, sub = subject, ses = session)
 h5_file = h5py.File(h5_filename,'r')
 folder_alias = 'eye_traces'
 time_start_seq = np.array(h5_file['{folder_alias}/time_start_seq'.format(folder_alias = folder_alias)])
@@ -82,8 +86,11 @@ dir_sequence = np.tile(dir_sequence,2)
 eye_data = np.array(h5_file['{folder_alias}/eye_data_seqs'.format(folder_alias = folder_alias)])
 eye_data_nan = np.array(h5_file['{folder_alias}/eye_data_seqs_nan_blink'.format(folder_alias = folder_alias)])
 
-occlusion_data = scipy.io.loadmat('{exp_dir}/data/{sub}/add//{sub}_task_occlusion_size.mat'.format(exp_dir = main_dir, sub = subject))
-occlusion_data = occlusion_data['occlusion']['occl_color_mat'][0][[1,3]]
+occlusion_data = scipy.io.loadmat('{exp_dir}/data/{sub}/{ses}/add/{sub}_task_occlusion_size.mat'.format(exp_dir = main_dir, sub = subject, ses = session))
+if subject[-1]=='t':
+    occlusion_data = occlusion_data['occlusion']['occl_color_mat'][0][1]
+else:
+    occlusion_data = occlusion_data['occlusion']['occl_color_mat'][0][[1,3]]
 # Define colors
 # -------------
 cmap_steps = 16
@@ -140,10 +147,13 @@ for run in runs:
     else:run_txt = '0{}'.format(run+1)
 
     # Define figure folder
-    try: os.makedirs('{file_dir}/add/figures/PurVELoc/run-{run_txt}'.format(file_dir = file_dir,run_txt = run_txt))
+    try: os.makedirs('{file_dir}/add/figures/PurVELoc/run-{run_txt}'.format(file_dir = file_dir, run_txt = run_txt))
     except: pass
 
-    occl_run = occlusion_data[run][:,1,0:30] # frames x dir x TRs
+    if subject[-1]=='t':
+        occl_run = occlusion_data[:,1,0:30] # frames x dir x TRs
+    else:
+        occl_run = occlusion_data[run][:,1,0:30] # frames x dir x TRs
     new_occl_run = []
     for idx,row in enumerate(occl_run.T):
         new_occl_run.extend(row)
