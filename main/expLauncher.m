@@ -1,8 +1,8 @@
 %% General experiment launcher
 %  =============================
-% By     :  Martin SZINTE & Vanessa C Morita
+% By     :  Vanessa C MORITA
 % Projet :  Localisers experiment
-% With   :  Anna MONTAGNINI & Guillaume MASSON
+% With   :  Martin SZINTE & Anna MONTAGNINI & Guillaume MASSON
 % Version:  1.0
 
 % Version description

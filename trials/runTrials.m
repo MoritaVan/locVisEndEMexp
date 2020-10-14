@@ -65,8 +65,8 @@ for t = 1:const.seq_num
     if t == 1
         % show the iti image
         Screen('FillRect',scr.main,const.background_color);
-        targetX = const.fixation_matX(0);
-        targetY = const.fixation_matY(0);
+        targetX = const.fixation_matX(1);
+        targetY = const.fixation_matY(1);
         drawEmptyTarget(scr,const,targetX,targetY,const.white);
         Screen('Flip',scr.main);
         

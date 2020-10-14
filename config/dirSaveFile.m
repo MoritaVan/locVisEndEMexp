@@ -17,10 +17,9 @@ function [const]=dirSaveFile(const)
 % ----------------------------------------------------------------------
 
 % Create data directory 
-if ~isdir(sprintf('data/%s/func/',const.sjct))
-    mkdir(sprintf('data/%s/func/',const.sjct))
+if ~isdir(sprintf('data/%s/%s/func/',const.sjct,const.session))
+    mkdir(sprintf('data/%s/%s/func/',const.sjct,const.session))
 end
-
 
 if const.cond_run_num(const.runNum) > 9
     const.run_txt   =  sprintf('run-%i',const.cond_run_num(const.runNum));
@@ -30,7 +29,7 @@ end
 
 
 % Define directory
-const.dat_output_file   =   sprintf('data/%s/func/%s_task-%s%s_%s',const.sjct,const.sjct,const.cond2_txt,const.cond1_txt,const.run_txt);
+const.dat_output_file   =   sprintf('data/%s/%s/func/%s_%s_task-%s%s_%s',const.sjct,const.session,const.sjct,const.session,const.cond2_txt,const.cond1_txt,const.run_txt);
 
 % Eye data
 const.eyelink_temp_file =   'XX.edf';
@@ -51,23 +50,22 @@ if const.expStart
 end
 const.behav_file_fid    =   fopen(const.behav_file,'w');
 
-
 % Create additional info directory
-if ~isdir(sprintf('data/%s/add/',const.sjct))
-    mkdir(sprintf('data/%s/add/',const.sjct))
+if ~isdir(sprintf('data/%s/%s/add/',const.sjct,const.session))
+    mkdir(sprintf('data/%s/%s/add/',const.sjct,const.session))
 end
 
 % Define directory
-const.add_output_file   =   sprintf('data/%s/add/%s_task-%s%s_%s',const.sjct,const.sjct,const.cond2_txt,const.cond1_txt,const.run_txt);
+const.add_output_file   =   sprintf('data/%s/%s/add/%s_%s_task-%s%s_%s',const.sjct,const.session,const.sjct,const.session,const.cond2_txt,const.cond1_txt,const.run_txt);
 
 % Define .mat saving file
 const.mat_file          =   sprintf('%s_matFile.mat',const.add_output_file);
 
 % Direction sequence file
-const.task_dir_sequence_file =   sprintf('data/%s/add/%s_task_dir_sequence.mat',const.sjct,const.sjct);
+const.task_dir_sequence_file =   sprintf('data/%s/%s/add/%s_task_dir_sequence.mat',const.sjct,const.session,const.sjct);
 
 % Occlusion sizes file
-const.task_occlusion_file    =   sprintf('data/%s/add/%s_task_occlusion_size.mat',const.sjct,const.sjct);
+const.task_occlusion_file    =   sprintf('data/%s/%s/add/%s_task_occlusion_size.mat',const.sjct,const.session,const.sjct);
 
 % Log file
 if const.writeLogTxt
