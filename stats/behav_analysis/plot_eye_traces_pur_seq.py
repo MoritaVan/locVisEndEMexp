@@ -78,7 +78,10 @@ time_start_trial = np.array(h5_file['{folder_alias}/time_start_trial'.format(fol
 time_end_trial = np.array(h5_file['{folder_alias}/time_end_trial'.format(folder_alias = folder_alias)])
 dir_sequence = np.array(h5_file['{folder_alias}/dir_sequence'.format(folder_alias = folder_alias)])
 dir_sequence = np.tile(dir_sequence,2)
-eye_data = np.array(h5_file['{folder_alias}/eye_data_seqs_nan_blink'.format(folder_alias = folder_alias)])
+
+eye_data = np.array(h5_file['{folder_alias}/eye_data_seqs'.format(folder_alias = folder_alias)])
+eye_data_nan = np.array(h5_file['{folder_alias}/eye_data_seqs_nan_blink'.format(folder_alias = folder_alias)])
+
 occlusion_data = scipy.io.loadmat('{exp_dir}/data/{sub}/add//{sub}_task_occlusion_size.mat'.format(exp_dir = main_dir, sub = subject))
 occlusion_data = occlusion_data['occlusion']['occl_color_mat'][0][[1,3]]
 # Define colors
@@ -114,8 +117,8 @@ sacc_params = {
         'mindur': 5,
         'maxdur': 100,
         'minsep': 5,
-        'before_sacc': 50,
-        'after_sacc': 50
+        'before_sacc': 10,
+        'after_sacc': 25
 }
 # default:
 #     'mindur': 5,
@@ -182,16 +185,24 @@ for run in runs:
 
         velocity_deg_y = A.velocity_deg(data_x = eye_data[data_logic,2],
                             filt = 'position', cutoff = 30, sample_rate = 1000)
-
-        misac = A.detec_misac(velocity_x = velocity_deg_x,
-                                velocity_y = velocity_deg_y,
-                                t_0        = eye_data[data_logic,0][0],
+        
+        misac = []
+        idx = np.round(np.linspace(0,velocity_deg_y.shape[0],35)).astype(int)
+        for i in range(len(idx[:-1])):
+            misac_tmp = A.detec_misac(velocity_x = velocity_deg_x[idx[i]:idx[i+1]],
+                                velocity_y = velocity_deg_y[idx[i]:idx[i+1]],
+                                t_0        = eye_data[data_logic,0][idx[i]],
                                 VFAC       = 5,
                                 mindur     = sacc_params['mindur'],
                                 maxdur     = sacc_params['maxdur'],
                                 minsep     = sacc_params['minsep'])
+            misac.extend(misac_tmp)
 
-        new_saccades = [[x[0]-sacc_params['before_sacc'],x[1]-sacc_params['after_sacc']] for x in misac]
+        new_saccades = [[x[0]-sacc_params['before_sacc'],x[1]+sacc_params['after_sacc']] for x in misac]
+
+        idx = np.array(np.where((np.abs(velocity_deg_x) > 15) | (np.abs(velocity_deg_y) > 15))).T
+        forced_sac = [[eye_data[data_logic,0][i[0]]-sacc_params['before_sacc'],eye_data[data_logic,0][i[0]]+sacc_params['after_sacc']] for i in idx]
+        new_saccades.extend(forced_sac)
 
         velocity_x_NAN = velocity_deg_x
         velocity_y_NAN = velocity_deg_y
