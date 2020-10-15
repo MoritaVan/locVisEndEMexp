@@ -14,7 +14,7 @@ h5 files with loads of data on eye traces across runs
 -----------------------------------------------------------------------------------------
 To run:
 cd /Users/martin/Dropbox/Experiments/pMFexp/stats/
-python behav_analysis/extract_eyetraces.py sub-01 EyeMov
+python behav_analysis/extract_eyetraces.py sub-01 EyeMov ses-01
 -----------------------------------------------------------------------------------------
 """
 
@@ -39,7 +39,8 @@ deb = ipdb.set_trace
 # Get inputs
 # ----------
 subject = sys.argv[1]
-task = sys.argv[2]
+task    = sys.argv[2]
+session = sys.argv[3]
 
 # Define analysis parameters
 # --------------------------
@@ -64,14 +65,17 @@ elif platform.system() == 'Linux':
 
 # Define file list
 # ----------------
-file_dir = '{exp_dir}/data/{sub}'.format(exp_dir = main_dir, sub = subject)
-list_filename = ['{sub}_task-{task}_run-01'.format(sub = subject, task = task),
-                 '{sub}_task-{task}_run-02'.format(sub = subject, task = task),]
+file_dir = '{exp_dir}/data/{sub}/{ses}'.format(exp_dir = main_dir, sub = subject, ses = session)
+list_filename = ['{sub}_{ses}_task-{task}_run-01'.format(sub = subject, ses = session, task = task),
+                 '{sub}_{ses}_task-{task}_run-02'.format(sub = subject, ses = session, task = task),]
 
 
 # Define experiments details
 # --------------------------
-num_run = analysis_info['num_run']
+if subject[-1]=='t':
+    num_run = np.arange(0,analysis_info['num_run_t'],1)
+else:
+    num_run = np.arange(0,analysis_info['num_run'],1)
 num_seq = analysis_info['num_seq']
 seq_trs = analysis_info['seq_trs']
 eye_mov_seq = analysis_info['eye_mov_seq'] # ?
@@ -276,7 +280,7 @@ if re.search(r"Pur", task):
 
 # Save all
 # --------
-h5_file = "{file_dir}/add/{sub}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, task = task)
+h5_file = "{file_dir}/add/{sub}_{ses}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, ses = session, task = task)
 folder_alias = 'eye_traces'
 
 try: os.system('rm {h5_file}'.format(h5_file = h5_file))

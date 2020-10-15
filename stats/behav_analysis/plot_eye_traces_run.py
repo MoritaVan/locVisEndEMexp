@@ -14,7 +14,7 @@ h5 files with loads of data on eye traces across runs
 -----------------------------------------------------------------------------------------
 To run:
 cd /Users/martin/Dropbox/Experiments/pMFexp/stats/
-python behav_analysis/plot_eye_traces_run.py sub-01 EyeMov
+python behav_analysis/plot_eye_traces_run.py sub-01 EyeMov ses-01
 -----------------------------------------------------------------------------------------
 """
 
@@ -46,6 +46,7 @@ from sac_utils import draw_bg_trial
 # ----------
 subject = sys.argv[1]
 task = sys.argv[2]
+session = sys.argv[3]
 
 # Define analysis parameters
 # --------------------------
@@ -69,8 +70,8 @@ rads = analysis_info['rads']
 
 # Load data
 # ---------
-file_dir = '{exp_dir}/data/{sub}'.format(exp_dir = main_dir, sub = subject)
-h5_filename = "{file_dir}/add/{sub}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, task = task)
+file_dir = '{exp_dir}/data/{sub}/{ses}'.format(exp_dir = main_dir, sub = subject, ses = session)
+h5_filename = "{file_dir}/add/{sub}_{ses}_task-{task}_eyedata.h5".format(file_dir = file_dir, sub = subject, ses = session, task = task)
 h5_file = h5py.File(h5_filename,'r')
 folder_alias = 'eye_traces'
 eye_data = np.array(h5_file['{folder_alias}/eye_data_runs_int_blink'.format(folder_alias = folder_alias)])
