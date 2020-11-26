@@ -97,13 +97,13 @@ matSeqDir = [1 if x==1 else -1 for x in matSeqDir] # x==1 -> ccw, x==2 -> cw
 # -------------
 eye_data_runs = []
 time_last_run_eye   =   0
-time_start_eye = np.zeros((1,num_run))
-time_end_eye = np.zeros((1,num_run))
-time_start_seq = np.zeros((num_seq,num_run))
-time_end_seq = np.zeros((num_seq,num_run))
-time_start_trial = np.zeros((seq_trs,num_seq,num_run))
-time_end_trial = np.zeros((seq_trs,num_seq,num_run))
-for t_run in np.arange(0,num_run,1):
+time_start_eye = np.zeros((1,len(num_run)))
+time_end_eye = np.zeros((1,len(num_run)))
+time_start_seq = np.zeros((num_seq,len(num_run)))
+time_end_seq = np.zeros((num_seq,len(num_run)))
+time_start_trial = np.zeros((seq_trs,num_seq,len(num_run)))
+time_end_trial = np.zeros((seq_trs,num_seq,len(num_run)))
+for t_run in np.arange(0,len(num_run),1):
 
     edf_filename = '{file_dir}/func/{filename}_eyeData'.format(file_dir = file_dir,filename = list_filename[t_run])
     mat_filename = '{file_dir}/add/{filename}_matFile.mat'.format(file_dir = file_dir,filename = list_filename[t_run])

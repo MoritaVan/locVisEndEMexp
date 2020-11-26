@@ -1,5 +1,6 @@
 get eye coordinates using stats/behav_analysis/extract_eyetraces.py
 get saccade parameters using stats/behav_analysis/extract_saccades.py
+
 plot eye traces per run using stats/behav_analysis/plot_eye_traces_run.py
 plot eye traces per saccade sequence using stats/behav_analysis/plot_eye_traces_sac_seq.py
 plot eye traces per trial using stats/behav_analysis/plot_eye_traces_trial.py
