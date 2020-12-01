@@ -24,7 +24,7 @@ function [const] = runExp(scr,const,expDes,el,my_key)
 if const.mkVideo
     expDes.vid_num          =   0;
     const.vid_obj           =   VideoWriter(const.movie_file,'MPEG-4');
-    const.vid_obj.FrameRate =   60;
+    const.vid_obj.FrameRate =   120;
 	const.vid_obj.Quality   =   100;
     open(const.vid_obj);
 end
