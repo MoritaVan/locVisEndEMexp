@@ -6,9 +6,11 @@ plot_eyetraces_pur_seq.py
 -----------------------------------------------------------------------------------------
 Goal of the script:
 Plot horizontal and vertical eye trace of each run and the fit
+for the Pursuit task
 -----------------------------------------------------------------------------------------
 Input(s):
 sys.argv[1]: subject number (sub-01)
+sys.argv[2]: session number (ses-02)
 -----------------------------------------------------------------------------------------
 Output(s):
 h5 files with loads of data on eye traces across seqs
@@ -37,6 +39,7 @@ import h5py
 import scipy.io
 import matplotlib.pyplot as plt
 from seaborn import color_palette 
+sys.path.append("/home/moritav/repos/INVIBE/ANEMO")
 from ANEMO import ANEMO, read_edf
 deb = ipdb.set_trace
 

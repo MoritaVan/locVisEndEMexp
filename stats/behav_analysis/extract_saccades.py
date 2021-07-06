@@ -215,7 +215,7 @@ for run in runs:
 						vals_all = np.array([	run,			sequence,		trial,			np.nan,			np.nan,\
 												np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 												np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
-												np.nan,			np.nan,			np.nan,			fix_cor,		sac_cor,\
+												np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 												saccade_task, 	miss_time,		sac_accuracy,	no_saccade,		microsaccade,\
 												blink_saccade])
 
@@ -224,7 +224,7 @@ for run in runs:
 						vals_all = np.vstack((vals_all,np.array([	run,			sequence,		trial,			np.nan,			np.nan,\
 																	np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 																	np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
-																	np.nan,			np.nan,			np.nan,			fix_cor,		sac_cor,\
+																	np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 																	saccade_task, 	miss_time,		sac_accuracy,	no_saccade,		microsaccade,\
 																	blink_saccade])))
 
@@ -271,7 +271,7 @@ for run in runs:
 					vals_all = np.array([	run,			sequence,		trial,			np.nan,			np.nan,\
 											np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 											np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
-											np.nan,			np.nan,			np.nan,			fix_cor,		sac_cor,\
+											np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 											saccade_task, 	miss_time,		sac_accuracy,	no_saccade,		microsaccade,\
 											blink_saccade])
 					mat = 1
@@ -279,7 +279,7 @@ for run in runs:
 					vals_all = np.vstack((vals_all,np.array([	run,			sequence,		trial,			np.nan,			np.nan,\
 																np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 																np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
-																np.nan,			np.nan,			np.nan,			fix_cor,		sac_cor,\
+																np.nan,			np.nan,			np.nan,			np.nan,			np.nan,\
 																saccade_task, 	miss_time,		sac_accuracy,	no_saccade,		microsaccade,\
 																blink_saccade])))
 

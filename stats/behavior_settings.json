@@ -3,7 +3,7 @@
     "edf2asc_dir_win":"/Applications/Eyelink/EDF_Access_API/Example",
     "main_dir_mac":"/Users/martin/Dropbox/Experiments/locVisEndEMexp",
     "main_dir_pc":"C:/Users/invibe/Experiments/locVisEndEMexp/",
-    "main_dir_unix":"/home/moritav/repos/INVIBE/locVisEndEMexp",
+    "main_dir_unix":"/home/moritav/repos/INVIBE/locVisEndEMexp_github",
     "num_run": 2,
     "num_run_t":1, 
     "num_seq": 9,
