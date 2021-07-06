@@ -8,6 +8,7 @@ Extract saccade metrics
 Input(s):
 sys.argv[1]: subject number (sub-01)
 sys.argv[2]: task (EyeMov)
+sys.argv[3]: session (ses-01)
 -----------------------------------------------------------------------------------------
 Output(s):
 h5 files with vals_all
